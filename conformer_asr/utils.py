@@ -134,7 +134,7 @@ class Logger():
     def log_error(self, message=""):
         self.logger.error(message)
 
-config = Config("/home/khoatlv/Conformer_ASR/config/training_config.yaml")
+config = Config("/home/khoatlv/ASR_Nemo/config/training_config.yaml")
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()

@@ -184,7 +184,7 @@ trainer:
   benchmark: false
 
 exp_manager:
-  exp_dir: "/home/khoatlv/Conformer_ASR/experiments"
+  exp_dir: "/home/khoatlv/ASR_Nemo/experiments"
   name: "Conformer_small_Model_Language_vi"
   create_tensorboard_logger: true
   create_checkpoint_callback: true

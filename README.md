@@ -5,13 +5,14 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#about-the-project">Config selected data training</a>
+      <a href="#load-and-start-docker-image">Config selected data training</a>
       <ul>
-        <li><a href="#built-with">Built With</a></li>
+        <li><a href="#load-image">Load image</a></li>
+        <li><a href="#Start-image">Start image</a></li>
       </ul>
     </li>
     <li>
-      <a href="#getting-started">Getting Started</a>
+      <a href="#datasets">Datasets</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
         <li><a href="#installation">Installation</a></li>
@@ -26,7 +27,8 @@
   </ol>
 </details>
 
-## LOAD AND STARRT DOCKER IMAGE
+<!-- LOAD AND START DOCKER IMAGE -->
+## LOAD AND START DOCKER IMAGE
 ### Load image
 1. Enter Conformer Repo
    ```sh
