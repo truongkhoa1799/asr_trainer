@@ -1,0 +1,81 @@
+# FROM nvidia/cuda:11.0-base
+
+# USER root
+# ENV DEBIAN_FRONTEND=noninteractive
+# RUN apt-get update && \
+#     apt-get install -y \
+#     build-essential libboost-all-dev \
+#     cmake libsndfile1 sox \
+#     zlib1g-dev libbz2-dev liblzma-dev \
+#     libfreetype6 python-setuptools swig \
+#     python-dev ffmpeg python3.8 \
+#     python3-pip git wget apt-utils \
+#     libasound-dev
+
+# WORKDIR /tmp/nemo
+# COPY NeMo ./
+# RUN pip3 install -e .
+
+# WORKDIR /tmp/packages/beamsearch
+# COPY decoders ./decoders
+# RUN cd decoders && bash setup_kenlm.sh
+# RUN cd decoders && bash setup_openfst.sh
+# RUN cd decoders && bash setup_threadpool.sh
+# RUN cd decoders && RUN python3 setup.py install --num_processes 4
+
+# RUN pip3 uninstall -y setuptools transformers huggingface-hub numba numpy
+# RUN pip3 install setuptools==59.5.0 transformers==4.9.2 huggingface-hub==0.0.12 numpy==1.19.5 numba==0.55.1 https://github.com/kpu/kenlm/archive/master.zip
+# RUN pip3 uninstall pesq -y && cd ..
+# RUN git clone https://github.com/ludlows/python-pesq.git && cd python-pesq && pip3 install . && cd .. && rm -rf python-pesq
+
+# WORKDIR /tmp/portaudio
+# COPY portaudio ./
+# RUN ./configure && make && make install
+
+# WORKDIR /tmp/nemo
+# COPY requirements.txt ./
+# RUN pip3 install --disable-pip-version-check --no-cache-dir -r requirements.txt
+
+# ------------------------------------------------------------------------------------------
+# # build torchaudio (change latest release version to match pytorch)
+# WORKDIR /tmp/torchaudio_build
+# RUN git clone --depth 1 --branch release/0.11 https://github.com/pytorch/audio.git && \
+#     cd audio && \
+#     git submodule update --init --recursive && \
+#     BUILD_SOX=1 python3 setup.py install && \
+#     cd .. && rm -r audio
+
+# #install TRT tools: PT quantization support and ONNX graph optimizer
+# WORKDIR /tmp/trt_build
+# RUN git clone https://github.com/NVIDIA/TensorRT.git && \
+#     cd TensorRT/tools/onnx-graphsurgeon && python setup.py install && \
+#     cd ../pytorch-quantization && \
+#     python setup.py install && \
+#     rm -fr  /tmp/trt_build
+# ------------------------------------------------------------------------------------------
+
+FROM 931a23286320
+
+WORKDIR /tmp/nemo
+RUN pip3 install -e .
+RUN pip3 uninstall -y setuptools transformers huggingface-hub numba numpy
+RUN pip3 install setuptools==59.5.0 transformers==4.9.2 huggingface-hub==0.0.12 numpy==1.19.5 https://github.com/kpu/kenlm/archive/master.zip
+RUN git clone https://github.com/ludlows/python-pesq.git && cd python-pesq && pip3 install . && cd .. && rm -rf python-pesq
+RUN pip3 install torch==1.10.0+cu113 torchvision==0.11.1+cu113 torchaudio==0.10.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html
+
+# Install numba
+# RUN conda remove numba
+# RUN pip uninstall numba
+# RUN conda install -c conda-forge numba
+
+# Install apex
+# git clone https://github.com/NVIDIA/apex
+# cd apex
+# git checkout 89edb8196546187247c487a0494f7b6767ff0dc5
+# pip install -v --disable-pip-version-check --no-cache-dir --global-option="--cpp_ext" --global-option="--cuda_ext" --global-option="--fast_layer_norm" ./
+
+FROM nova/asr
+WORKDIR /home/khoatlv
+## this CMD will be called when we run docker run --gpus all -p 8888:8888 nvidia/cuda
+docker create --gpus all -it --rm -v /home/khoa.tlv:/home/khoatlv --shm-size=8g --ulimit memlock=-1 --ulimit \
+stack=67108864 --device=/dev/snd --name base_nemo nvcr.io/nvidia/pytorch:21.12-py3

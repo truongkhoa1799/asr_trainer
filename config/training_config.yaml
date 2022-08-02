@@ -1,0 +1,161 @@
+BASE_DIR: "/home/khoatlv/Conformer_ASR"
+
+logger:
+  file_path: "/home/khoatlv/Conformer_ASR/config/training_config.yaml"
+
+prepare_data:
+  infore_25h:
+    wav_dir: "/home/khoatlv/data/infore/infore_25h/wav"
+    manifest: "/home/khoatlv/data/infore/infore_25h/manifest/infore_25h_manifest.json"
+    test_manifest: "/home/khoatlv/data/infore/infore_25h/manifest/infore_25h_test_manifest.json"
+    train_manifest: "/home/khoatlv/data/infore/infore_25h/manifest/infore_25h_train_manifest.json"
+  
+  infore_415h:
+    wav_dir: "/home/khoatlv/data/infore/infore_415h/book_relocated"
+    original_manifest: "/home/khoatlv/data/infore/infore_415h/data_book_train_relocated.json"
+    manifest: "/home/khoatlv/data/infore/infore_415h/manifests/infore_415h_manifest.json"
+    test_manifest: "/home/khoatlv/data/infore/infore_415h/manifests/infore_415h_test_manifest.json"
+    train_manifest: "/home/khoatlv/data/infore/infore_415h/manifests/infore_415h_train_manifest.json"
+  
+  vlsp2020_set1:
+    data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_train_set_01"
+    manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_set_01_manifest.json"
+    test_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_test_set_01_manifest.json"
+    train_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_train_set_01_manifest.json"
+    invalid_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_invalid_set_01_manifest.json"
+  
+  vlsp2020_set2:
+    data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_train_set_02"
+    manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_set_02_manifest.json"
+    test_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_test_set_02_manifest.json"
+    train_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_train_set_02_manifest.json"
+    invalid_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_invalid_set_02_manifest.json"
+  
+  viettel:
+    manifest: "/home/khoatlv/data/data_collected/viettel/manifests/manifests.json"
+    test_manifest: "/home/khoatlv/data/data_collected/viettel/manifests/viettel_test_manifests.json"
+    train_manifest: "/home/khoatlv/data/data_collected/viettel/manifests/viettel_train_manifests.json"
+
+  viettel_assistant:
+    manifest: "/home/khoatlv/data/data_collected/viettel/assistant/manifests/manifests.json"
+    test_manifest: "/home/khoatlv/data/data_collected/viettel/assistant/manifests/viettel_assistant_test_manifests.json"
+    train_manifest: "/home/khoatlv/data/data_collected/viettel/assistant/manifests/viettel_assistant_train_manifests.json"
+  
+  zalo:
+    manifest: "/home/khoatlv/data/data_collected/Zalo/manifests/manifests.json"
+    test_manifest: "/home/khoatlv/data/data_collected/Zalo/manifests/zalo_test_manifests.json"
+    train_manifest: "/home/khoatlv/data/data_collected/Zalo/manifests/zalo_train_manifests.json"
+  
+  fpt:
+    manifest: "/home/khoatlv/data/data_collected/FPT/manifests/manifests.json"
+    test_manifest: "/home/khoatlv/data/data_collected/FPT/manifests/fpt_test_manifests.json"
+    train_manifest: "/home/khoatlv/data/data_collected/FPT/manifests/fpt_train_manifests.json"
+  
+  common_voice:
+    test_manifest: "/home/khoatlv/data/common_voice/manifests/commonvoice_test_manifest.json"
+    dev_manifest: "/home/khoatlv/data/common_voice/manifests/commonvoice_dev_manifest.json"
+    train_manifest: "/home/khoatlv/data/common_voice/manifests/commonvoice_train_manifest.json"
+  
+  vivos:
+    test_manifest: "/home/khoatlv/data/vivos/manifests/test_manifest.json"
+    train_manifest: "/home/khoatlv/data/vivos/manifests/train_manifest.json"
+
+training:
+  manifest:
+    train_manifest: "/home/khoatlv/manifests/train_manifest.json"
+    test_manifest: "/home/khoatlv/manifests/test_manifest.json"
+
+    train_manifest_cleaned: "/home/khoatlv/manifests/train_manifest_processed.json"
+    test_manifest_cleaned: "/home/khoatlv/manifests/test_manifest_processed.json"
+  
+  use_datasets:
+    use_common_voice: True
+    use_vivos: False
+    use_vlsp2020_set1: False  # 100.000 files
+    use_vlsp2020_set2: False   # 43.000 files
+    use_infore_25h: False
+    use_infore_415h: False
+
+    # Data collected
+    use_viettel: False
+    use_viettel_assistant: False
+    use_fpt: False
+    use_zalo: False
+  
+  vocabs: [
+    'b', 'c', 'd', 'đ', 'g', 'h', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'x',
+
+    'a', 'á', 'à', 'ạ', 'ã', 'ả',
+    'ă', 'ắ', 'ằ', 'ặ', 'ẵ', 'ẳ',
+    'â', 'ấ', 'ầ', 'ậ', 'ẫ', 'ẩ',
+
+    'e', 'é', 'è', 'ẹ', 'ẽ', 'ẻ',
+    'ê', 'ế', 'ề', 'ệ', 'ễ', 'ể',
+
+    'i', 'í', 'ì', 'ị', 'ĩ', 'ỉ',
+    'y', 'ý', 'ỳ', 'ỵ', 'ỹ', 'ỷ',
+    
+    'o', 'ó', 'ò', 'ọ', 'õ', 'ỏ',
+    'ô', 'ố', 'ồ', 'ộ', 'ỗ', 'ổ',
+    'ơ', 'ớ', 'ờ', 'ợ', 'ỡ', 'ở',
+
+    'u', 'ú', 'ù', 'ụ', 'ũ', 'ủ',
+    'ư', 'ứ', 'ừ', 'ự', 'ữ', 'ử',
+    
+    'j', 'f', 'w', 'z', ' '
+  ]
+
+  vocab_size: 256
+  tokenizer:
+    tokenizer_dir: "/home/khoatlv/Conformer_ASR/tokenizers/tokenizers_conformer_1659416733"
+    type: spe
+    type_cfg: bpe
+    tokenizer_conformer: "tokenizer_${training.tokenizer.type}_${training.tokenizer.type_cfg}_v${training.vocab_size}"
+  
+  model:
+    config: "/home/khoatlv/Conformer_ASR/config/conformer_small_ctc_bpe.yaml"
+    finetuned_model: "/home/khoatlv/Conformer_ASR/models/conformer/Conformer_small_epoch=98.nemo"
+    freeze_encoder: False
+    device: 'cuda'
+
+    use_pretrained: True
+    from_pretrained: "stt_en_conformer_ctc_small" 
+  
+  wandb:
+    is_use: True
+    key: 03f1412a8edbcb2869809c69eb534d8b803365b2
+
+lm:
+  data:
+    train_test_manifest: "/home/khoatlv/Conformer_ASR/n_gram_lm/data/train_test_manifest.json"
+    all_data: "/home/khoatlv/Conformer_ASR/n_gram_lm/data/all_data.txt"
+    assistant_data: "/home/khoatlv/Conformer_ASR/n_gram_lm/data/assistant_data.txt"
+    manifest_data: "/home/khoatlv/Conformer_ASR/n_gram_lm/data/manifest_data.txt"
+  
+  kenlm:
+    train_kenlm: "/home/khoatlv/Conformer_ASR/n_gram_lm/kenlm/train_kenlm.py"
+    eval_ngram: "/home/khoatlv/Conformer_ASR/n_gram_lm/kenlm/eval_beamsearch_ngram.py"
+    kenlm_bin: "/home/khoatlv/Conformer_ASR/decoders/kenlm/build/bin"
+  
+  model:
+    n_gram_model: "/home/khoatlv/Conformer_ASR/n_gram_lm/n_gram_lm_model"
+    model_name: "conformer-small"
+    ngram_length: 4
+    asr_path: "/home/khoatlv/Conformer_ASR/models/conformer/Conformer_small_Model_Language_vi_epoch=250.nemo"
+    kenml_model_file: "${lm.model.n_gram_model}/${lm.model.ngram_length}-gram_${lm.model.model_name}_lm.bin"
+  
+collect_viettel_data:
+  assistant:
+    collected: "/home/khoatlv/data/data_collected/viettel/assistant/raw"
+    resample: "/home/khoatlv/data/data_collected/viettel/assistant/resample"
+    manifests_dir: "/home/khoatlv/data/data_collected/viettel/assistant/manifests"
+  
+  speeds: [-2, 0]
+  speakers: [
+      "hn-quynhanh",
+      "hcm-diemmy",
+      "hue-maingoc",
+      "hn-thanhtung",
+      "hue-baoquoc",
+      "hcm-minhquan",
+  ]
