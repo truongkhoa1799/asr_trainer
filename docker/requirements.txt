@@ -20,3 +20,4 @@ jiwer==2.3.0
 
 huggingface-hub==0.8.1
 pytorch-lightning==1.6.5
+openpyxl==3.0.10

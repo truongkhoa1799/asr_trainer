@@ -52,9 +52,59 @@
    cd Conformer_ASR/docker/ && pip3 install -r requirements.txt
    ```
 
+<!-- Evaluate ASR dataset -->
+## EVALUATE AND CLEAN ASR DATASETS
+In this section, we perform the following steps to evaluate the ASR dataset. Then, the result will be stored and analysis to create final cleaned manifest for the next step, create training and testing manifests.
+
+### **1. Evaluate ASR datasets**
+
+1. First, we choose which datasets we want to evaluate by modify the value of the field *evaluation.dataset* in **training_config.yml** to the manifest of this datasets.
+2. Change the field *evaluation.resutl.dataset_name* to the datasets name for logging reuslt
+3. Run the following command:
+  ```sh
+  export PYTHONPATH=$PWD
+  python3 conformer_asr/evaluation/evaluate_asr_data.py --evaluation
+  ```
+
+### **2. Clean ASR datasets**
+Based on the result of the below steps, we can remove bad data in the evaluation manifest by checking which data has wer >= threshold_wer defined in the **training_config.yml**.
+1. Run the following command:
+  ```sh
+  python3 conformer_asr/evaluation/evaluate_asr_data.py --clean_evaluation_dataset
+  ```
+2. The clean datasets manifest will be store at the same directory with evaluation manifest. However, the name will be added with **_clean** at the end of evaluation manifest name.
+
+<!-- ABOUT THE PROJECT -->
+## PREPARE DATASETS
+This section contains script for creating the *training* and *testing* manifest of datasets
+1. Infore 415H dataset:
+  * In other to create *training* and *testing* manifest for this dataset, we:  
+    1. Create manifest from the orginal manifest (*data_book_train_relocated.json*) by replace the directory of wave data in this manifest with the one we store audio (*book_relocated*)
+    ```sh
+    python3 conformer_asr/data/infore_datasets/prepare_infore_415h.py --create_manifest
+    ```
+    2. We perform the evaluation asr datasets in the below step to create *cleaned manifest*
+    3. Finally, create *training* and *testing* manifest with the following command:
+    ```sh
+    python3 conformer_asr/data/infore_datasets/prepare_infore_415h.py --split_dataset
+    ```
+
+2. Infore 25H dataset:
+  * In other to create *training* and *testing* manifest for this dataset, we:  
+    1. Create manifest from the list of waves and scripts by matching the value of 2 dictionary.
+    ```sh
+    python3 conformer_asr/data/infore_datasets/prepare_infore_25h.py --create_manifest
+    ```
+    2. Then, create *training* and *testing* manifest with the following command:
+    ```sh
+    python3 conformer_asr/data/infore_datasets/prepare_infore_25h.py --split_dataset
+    ```
+
+
+
 <!-- ABOUT THE PROJECT -->
 ## DATASETS
-### **Configure training datasets**
+### **1. Configure training datasets**
 In the **training_config.yml**, we are able to configure which data we want to train by modify the boolean parameter
 
 General Data Training:
@@ -71,7 +121,7 @@ Collected Data Training
 * use_fpt
 * use_zalo
 
-### **Summary dataset**
+### **2. Summary dataset**
 Inorder to summarize the information of datasets, we execute the following command:
 * python3
   ```sh
@@ -79,7 +129,7 @@ Inorder to summarize the information of datasets, we execute the following comma
   python3 conformer_asr/utils.py --summarize_dataset
   ```
 
-### **Create Manifest for training**
+### **3. Create Manifest for training**
 In this section, we create training manifest and testing manifest for conformer trainer. The following step will be conducted in this script:
 
 
@@ -89,7 +139,7 @@ In this section, we create training manifest and testing manifest for conformer 
   python3 conformer_asr/data/create_manifest_dataset.py
   ```
 1. First, we choose which dataset is used for training in the **training_config.yml**
-2. Then, based on the training configuration, we create the training manifest and testing manifest for the training phase.
+2. Then, based on the training configuration, we create the training manifest and testing manifest for the training phase based on the *training_manifest* and *testing_manifest* of datasets.
 3. Next, with the training and testing manifest, we perform the following preprocessing steps and store with preprocessed data:
     * Remove special characters
     * Lower case
