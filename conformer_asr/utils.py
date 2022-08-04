@@ -6,6 +6,7 @@ import logging
 import sys
 import os
 import argparse
+from typing import TypedDict, List
 
 class ManifestData(TypedDict):
     audio_filepath: str

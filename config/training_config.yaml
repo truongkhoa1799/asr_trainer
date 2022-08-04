@@ -36,6 +36,19 @@ prepare_data:
 
     invalid_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_invalid_set_02_manifest.json"
   
+  vlsp2021:
+    test_directory: "/home/khoatlv/data/vlsp2021/private_test"
+    train_directory: "/home/khoatlv/data/vlsp2021/training_set"
+
+    trainingset_indomain_data_dir: "/home/khoatlv/data/vlsp2021/trainingset-indomain/wav"
+    devset_data_dir: "/home/khoatlv/data/vlsp2021/VLSP-ASR-2021-labeled_devset/wav"
+
+    trainingset_indomain_transcript_path: "/home/khoatlv/data/vlsp2021/trainingset-indomain/transcript.txt"
+    devset_transcript_path: "/home/khoatlv/data/vlsp2021/VLSP-ASR-2021-labeled_devset/transcript.txt"
+
+    train_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_training_manifest.json"
+    test_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_testing_manifest.json"
+    
   viettel:
     manifest: "/home/khoatlv/data/data_collected/viettel/manifests/manifests.json"
     test_manifest: "/home/khoatlv/data/data_collected/viettel/manifests/viettel_test_manifests.json"
@@ -137,17 +150,7 @@ evaluation:
     lm_file_path: "/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/wav2vec_models/4-gram-lm_large.bin"
   
   threshold_wer: 0.2
-  dataset: "/home/khoatlv/data/infore/infore_415h/manifests/infore_415h_manifest.json"
-  
-  result:
-    dataset_name: "Infore_415h"
-    log_data_result_path: "/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data/${evaluation.result.dataset_name}_result.log"
-    log_data_error_path: "/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data/${evaluation.result.dataset_name}_error.log"
-
-  bad_data:
-    bad_data_path_excel: "/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data/${evaluation.result.dataset_name}_wer>=${evaluation.threshold_wer}.xlsx"
-    bad_data_path_csv: "/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data/${evaluation.result.dataset_name}_wer>=${evaluation.threshold_wer}.csv"
-    error_data_path: "/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data/${evaluation.result.dataset_name}/log_error_files.csv"
+  result_directory: "/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data"
 
 lm:
   data:

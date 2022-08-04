@@ -57,22 +57,33 @@
 In this section, we perform the following steps to evaluate the ASR dataset. Then, the result will be stored and analysis to create final cleaned manifest for the next step, create training and testing manifests.
 
 ### **1. Evaluate ASR datasets**
-
-1. First, we choose which datasets we want to evaluate by modify the value of the field *evaluation.dataset* in **training_config.yml** to the manifest of this datasets.
-2. Change the field *evaluation.resutl.dataset_name* to the datasets name for logging reuslt
-3. Run the following command:
+1. Run the following command:
   ```sh
   export PYTHONPATH=$PWD
-  python3 conformer_asr/evaluation/evaluate_asr_data.py --evaluation
+  python3 conformer_asr/evaluation/evaluate_asr_data.py \
+  --evaluation \
+  --manifest_path={} \
+  --dataset_name={}
+  ```
+2. The result is then stored in the path of field *evaluation.result_directory* with the following structure:
+  ```sh
+  result_directory
+    - dataset_name
+      - {dataset_name}_result.log
+      - {dataset_name}_error.log
   ```
 
 ### **2. Clean ASR datasets**
-Based on the result of the below steps, we can remove bad data in the evaluation manifest by checking which data has wer >= threshold_wer defined in the **training_config.yml**.
+Based on the result of the below steps, we can remove bad data in the evaluation manifest by checking which data has wer >= threshold_wer.
 1. Run the following command:
   ```sh
-  python3 conformer_asr/evaluation/evaluate_asr_data.py --clean_evaluation_dataset
+  python3 conformer_asr/evaluation/evaluate_asr_data.py \
+  --clean_evaluation_dataset \
+  --log_data_result_path={} \
+  --manifest_path={} \
+  --clean_manifest_path={} \
+  --threshold_wer={}
   ```
-2. The clean datasets manifest will be store at the same directory with evaluation manifest. However, the name will be added with **_clean** at the end of evaluation manifest name.
 
 <!-- ABOUT THE PROJECT -->
 ## PREPARE DATASETS
