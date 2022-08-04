@@ -19,17 +19,21 @@ prepare_data:
     train_manifest: "/home/khoatlv/data/infore/infore_415h/manifests/infore_415h_train_manifest.json"
   
   vlsp2020_set1:
-    data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_train_set_01"
-    manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_set_01_manifest.json"
+    train_data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_train_set_01"
+    test_data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_test_set_01/wav"
+    
     test_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_test_set_01_manifest.json"
     train_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_train_set_01_manifest.json"
+
     invalid_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_invalid_set_01_manifest.json"
   
   vlsp2020_set2:
-    data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_train_set_02"
-    manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_set_02_manifest.json"
-    test_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_test_set_02_manifest.json"
+    train_data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_train_set_02"
+    test_data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_test_set_02/wav"
+
     train_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_train_set_02_manifest.json"
+    test_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_test_set_02_manifest.json"
+
     invalid_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_invalid_set_02_manifest.json"
   
   viettel:

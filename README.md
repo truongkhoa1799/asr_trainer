@@ -77,7 +77,8 @@ Based on the result of the below steps, we can remove bad data in the evaluation
 <!-- ABOUT THE PROJECT -->
 ## PREPARE DATASETS
 This section contains script for creating the *training* and *testing* manifest of datasets
-1. Infore 415H dataset:
+1. **Infore 415H dataset**:
+  * This datasets is the VLSP 2019
   * In other to create *training* and *testing* manifest for this dataset, we:  
     1. Create manifest from the orginal manifest (*data_book_train_relocated.json*) by replace the directory of wave data in this manifest with the one we store audio (*book_relocated*)
     ```sh
@@ -89,7 +90,7 @@ This section contains script for creating the *training* and *testing* manifest 
     python3 conformer_asr/data/infore_datasets/prepare_infore_415h.py --split_dataset
     ```
 
-2. Infore 25H dataset:
+2. **Infore 25H dataset**:
   * In other to create *training* and *testing* manifest for this dataset, we:  
     1. Create manifest from the list of waves and scripts by matching the value of 2 dictionary.
     ```sh
@@ -99,6 +100,16 @@ This section contains script for creating the *training* and *testing* manifest 
     ```sh
     python3 conformer_asr/data/infore_datasets/prepare_infore_25h.py --split_dataset
     ```
+
+3. **VLSP 2020**:
+  * The training and testing manifest of this datasets are created by mapping the dictionary of scripts and audio path from traing and test set
+  * Here we have 2 set datasets. Therefore, in order to create the manifest, we run the following command:
+    ```sh
+    python3 conformer_asr/data/prepare_vlsp2020.py --set_{nummber}
+    ```
+  * *number* is the value for which set we need to create training and testing manifest
+
+
 
 
 

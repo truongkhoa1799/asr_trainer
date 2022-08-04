@@ -7,6 +7,11 @@ import sys
 import os
 import argparse
 
+class ManifestData(TypedDict):
+    audio_filepath: str
+    duration: str
+    text: str
+    
 def read_manifest(manifest_path, ignore_data=False):
     manifest = []
     total_duration = 0
