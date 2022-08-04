@@ -118,14 +118,40 @@ def create_manifest(config):
     
     datasets = prepare_data.keys()
     for dataset in datasets:
-        if not config["use_datasets"][f"use_{dataset}"]: continue
+        if not config["use_datasets"][f"use_{dataset}"]: 
+            continue
         LOGGER.log_info(f"\tCreate manifest for {dataset} dataset")
         if dataset == "common_voice":
-            train_script += f"{prepare_data['common_voice']['train_manifest']} {prepare_data['common_voice']['dev_manifest']} "
-            test_script += f"{prepare_data['common_voice']['test_manifest']} "
+            train_manifest_path = prepare_data['common_voice']['train_manifest']
+            dev_manifest_path = prepare_data['common_voice']['dev_manifest']
+            test_manifest_path = prepare_data['common_voice']['test_manifest']
+            
+            if not os.path.exists(train_manifest_path) \
+                or not os.path.exists(dev_manifest_path) \
+                or not os.path.exists(test_manifest_path):
+                LOGGER.log_error(f"\tMissing manifests of {dataset} dataset")
+                exit(-1)
+            
+            train_script += f"{train_manifest_path} {dev_manifest_path} "
+            test_script += f"{test_manifest_path} "
+            
+            LOGGER.log_info(f"\t\t{train_manifest_path}")
+            LOGGER.log_info(f"\t\t{dev_manifest_path}")
+            LOGGER.log_info(f"\t\t{test_manifest_path}")
         else:
-            train_script += f"{prepare_data[dataset].train_manifest} "
-            test_script += f"{prepare_data[dataset].test_manifest} "
+            train_manifest_path = prepare_data[dataset].train_manifest
+            test_manifest_path = prepare_data[dataset].test_manifest
+            
+            if not os.path.exists(train_manifest_path) \
+                or not os.path.exists(test_manifest_path):
+                LOGGER.log_error(f"\tMissing manifests of {dataset} dataset")
+                exit(-1)
+            
+            train_script += f"{train_manifest_path} "
+            test_script += f"{test_manifest_path} "
+            
+            LOGGER.log_info(f"\t\t{train_manifest_path}")
+            LOGGER.log_info(f"\t\t{test_manifest_path}")
         
     if os.path.exists(config.manifest.train_manifest): os.remove(config.manifest.train_manifest)
     if os.path.exists(config.manifest.test_manifest): os.remove(config.manifest.test_manifest)

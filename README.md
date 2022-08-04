@@ -132,14 +132,15 @@ This section contains script for creating the *training* and *testing* manifest 
       ```sh
       python3 conformer_asr/evaluation/evaluate_asr_data.py \
       --evaluation \
-      --manifest_path=/home/khoatlv/data/vlsp2021/manifests/vlsp2021_training_manifest.json --dataset_name=vlsp2021_train
+      --manifest_path=/home/khoatlv/data/vlsp2021/manifests/vlsp2021_train_manifest.json \
+      --dataset_name=vlsp2021_train
       ```
 
       ```sh
       python3 conformer_asr/evaluation/evaluate_asr_data.py 
       --clean_evaluation_dataset \
-      --manifest_path=/home/khoatlv/data/vlsp2021/manifests/vlsp2021_training_manifest.json \
-      --clean_manifest_path=/home/khoatlv/data/vlsp2021/manifests/vlsp2021_training_manifest_cleaned.json \
+      --manifest_path=/home/khoatlv/data/vlsp2021/manifests/vlsp2021_train_manifest.json \
+      --clean_manifest_path=/home/khoatlv/data/vlsp2021/manifests/vlsp2021_train_manifest_cleaned.json \
       --log_data_result_path=/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data/vlsp2021_train/vlsp2021_train_result.log \
       --log_data_error_path=/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data/vlsp2021_train/vlsp2021_train_error.log \
       --threshold_wer=0.2
@@ -148,14 +149,15 @@ This section contains script for creating the *training* and *testing* manifest 
       ```sh
       python3 conformer_asr/evaluation/evaluate_asr_data.py \
       --evaluation \
-      --manifest_path=/home/khoatlv/data/vlsp2021/manifests/vlsp2021_testing_manifest.json --dataset_name=vlsp2021_test
+      --manifest_path=/home/khoatlv/data/vlsp2021/manifests/vlsp2021_test_manifest.json \
+      --dataset_name=vlsp2021_test
       ```
 
       ```sh
       python3 conformer_asr/evaluation/evaluate_asr_data.py 
       --clean_evaluation_dataset \
-      --manifest_path=/home/khoatlv/data/vlsp2021/manifests/vlsp2021_testing_manifest.json \
-      --clean_manifest_path=/home/khoatlv/data/vlsp2021/manifests/vlsp2021_testing_manifest_cleaned.json \
+      --manifest_path=/home/khoatlv/data/vlsp2021/manifests/vlsp2021_test_manifest.json \
+      --clean_manifest_path=/home/khoatlv/data/vlsp2021/manifests/vlsp2021_test_manifest_cleaned.json \
       --log_data_result_path=/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data/vlsp2021_test/vlsp2021_test_result.log \
       --log_data_error_path=/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data/vlsp2021_test/vlsp2021_test_error.log \
       --threshold_wer=0.2

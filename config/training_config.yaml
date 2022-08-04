@@ -7,35 +7,36 @@ prepare_data:
   infore_25h:
     wav_dir: "/home/khoatlv/data/infore/infore_25h/wav"
     manifest: "/home/khoatlv/data/infore/infore_25h/manifest/infore_25h_manifest.json"
+
     test_manifest: "/home/khoatlv/data/infore/infore_25h/manifest/infore_25h_test_manifest.json"
     train_manifest: "/home/khoatlv/data/infore/infore_25h/manifest/infore_25h_train_manifest.json"
   
   infore_415h:
     wav_dir: "/home/khoatlv/data/infore/infore_415h/book_relocated"
+
     original_manifest: "/home/khoatlv/data/infore/infore_415h/data_book_train_relocated.json"
     manifest: "/home/khoatlv/data/infore/infore_415h/manifests/infore_415h_manifest.json"
-    manifest_cleaned: "/home/khoatlv/data/infore/infore_415h/manifests/infore_415h_manifest_cleaned.json"
+    manifest_cleaned: "/home/khoatlv/data/infore/infore_415h/manifests/infore_415h_manifest_cleaned.json" # manifest used to generate test and train manifest
+
     test_manifest: "/home/khoatlv/data/infore/infore_415h/manifests/infore_415h_test_manifest.json"
     train_manifest: "/home/khoatlv/data/infore/infore_415h/manifests/infore_415h_train_manifest.json"
   
   vlsp2020_set1:
     train_data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_train_set_01"
     test_data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_test_set_01/wav"
+    invalid_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_invalid_set_01_manifest.json"
     
     test_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_test_set_01_manifest.json"
     train_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_train_set_01_manifest.json"
-
-    invalid_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_invalid_set_01_manifest.json"
   
   vlsp2020_set2:
     train_data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_train_set_02"
     test_data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_test_set_02/wav"
+    invalid_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_invalid_set_02_manifest.json"
 
     train_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_train_set_02_manifest.json"
     test_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_test_set_02_manifest.json"
 
-    invalid_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_invalid_set_02_manifest.json"
-  
   vlsp2021:
     test_directory: "/home/khoatlv/data/vlsp2021/private_test"
     train_directory: "/home/khoatlv/data/vlsp2021/training_set"
@@ -46,9 +47,12 @@ prepare_data:
     trainingset_indomain_transcript_path: "/home/khoatlv/data/vlsp2021/trainingset-indomain/transcript.txt"
     devset_transcript_path: "/home/khoatlv/data/vlsp2021/VLSP-ASR-2021-labeled_devset/transcript.txt"
 
-    train_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_training_manifest.json"
-    test_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_testing_manifest.json"
-    
+    original_train_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_train_manifest.json"
+    original_test_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_test_manifest.json"
+
+    train_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_train_manifest_cleaned.json"
+    test_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_test_manifest_cleaned.json"
+
   viettel:
     manifest: "/home/khoatlv/data/data_collected/viettel/manifests/manifests.json"
     test_manifest: "/home/khoatlv/data/data_collected/viettel/manifests/viettel_test_manifests.json"
@@ -87,18 +91,19 @@ training:
     test_manifest_cleaned: "/home/khoatlv/manifests/test_manifest_processed.json"
   
   use_datasets:
+    use_vivos: True
     use_common_voice: True
-    use_vivos: False
-    use_vlsp2020_set1: False  # 100.000 files
-    use_vlsp2020_set2: False   # 43.000 files
-    use_infore_25h: False
-    use_infore_415h: False
+    use_vlsp2020_set1: True  # 100.000 files
+    use_vlsp2020_set2: True   # 43.000 files
+    use_vlsp2021: True
+    use_infore_25h: True
+    use_infore_415h: True
 
     # Data collected
-    use_viettel: False
-    use_viettel_assistant: False
-    use_fpt: False
-    use_zalo: False
+    use_viettel: True
+    use_viettel_assistant: True
+    use_fpt: True
+    use_zalo: True
   
   vocabs: [
     'b', 'c', 'd', 'đ', 'g', 'h', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'x',
