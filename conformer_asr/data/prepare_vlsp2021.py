@@ -125,5 +125,5 @@ def create_testing_manifest(config):
 if __name__ == '__main__':
     vlsp_2021_config = config.get_config(['prepare_data', 'vlsp2021'])
     create_training_manifest(vlsp_2021_config)
-    # create_testing_manifest(vlsp_2021_config)
+    create_testing_manifest(vlsp_2021_config)
     
