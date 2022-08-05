@@ -5,20 +5,20 @@
   <summary>Table of Contents</summary>
   <ol>
     <li>
-      <a href="#load-and-start-docker-image">Config selected data training</a>
+      <a href="#load-and-start-docker-image">Load and start docker image</a>
       <ul>
         <li><a href="#load-image">Load image</a></li>
-        <li><a href="#Start-image">Start image</a></li>
+        <li><a href="#start-image">Start image</a></li>
       </ul>
     </li>
     <li>
-      <a href="#datasets">Datasets</a>
+      <a href="#evaluate-and-clean-asr-datasets">Evaluate and clean ASR datasets</a>
       <ul>
-        <li><a href="#prerequisites">Prerequisites</a></li>
-        <li><a href="#installation">Installation</a></li>
+        <li><a href="#evaluate-asr-datasets">Evaluate ASR datasets</a></li>
+        <li><a href="#clean-asr-datasets">Clean ASR datasets</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Usage</a></li>
+    <li><a href="#prepare-datasets">Prepare Datasets</a></li>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -28,7 +28,7 @@
 </details>
 
 <!-- LOAD AND START DOCKER IMAGE -->
-## LOAD AND START DOCKER IMAGE
+## Load and Start Docker Image
 ### Load image
 1. Enter Conformer Repo
    ```sh
@@ -53,10 +53,10 @@
    ```
 
 <!-- Evaluate ASR dataset -->
-## EVALUATE AND CLEAN ASR DATASETS
+## Evaluate and Clean ASR Datasets
 In this section, we perform the following steps to evaluate the ASR dataset. Then, the result will be stored and analysis to create final cleaned manifest for the next step, create training and testing manifests.
 
-### **1. Evaluate ASR datasets**
+### Evaluate ASR Datasets
 1. Run the following command:
   ```sh
   export PYTHONPATH=$PWD
@@ -73,7 +73,7 @@ In this section, we perform the following steps to evaluate the ASR dataset. The
       - {dataset_name}_error.log
   ```
 
-### **2. Clean ASR datasets**
+### Clean ASR datasets
 Based on the result of the below steps, we can remove bad data in the evaluation manifest by checking which data has wer >= threshold_wer.
 1. Run the following command:
   ```sh
@@ -87,10 +87,10 @@ Based on the result of the below steps, we can remove bad data in the evaluation
   ```
 
 
-<!-- ABOUT THE PROJECT -->
-## PREPARE DATASETS
+<!-- PREPARE DATASETS -->
+## Prepare Datasets
 This section contains script for creating the *training* and *testing* manifest of datasets
-1. **Infore 415H dataset**:
+### **Infore 415H dataset**:
   * This datasets is the VLSP 2019
   * In other to create *training* and *testing* manifest for this dataset, we:  
     1. Create manifest from the orginal manifest (*data_book_train_relocated.json*) by replace the directory of wave data in this manifest with the one we store audio (*book_relocated*)
@@ -103,7 +103,7 @@ This section contains script for creating the *training* and *testing* manifest 
     python3 conformer_asr/data/infore_datasets/prepare_infore_415h.py --split_dataset
     ```
 
-2. **Infore 25H dataset**:
+### **Infore 25H dataset**:
   * In other to create *training* and *testing* manifest for this dataset, we:  
     1. Create manifest from the list of waves and scripts by matching the value of 2 dictionary.
     ```sh
@@ -114,7 +114,7 @@ This section contains script for creating the *training* and *testing* manifest 
     python3 conformer_asr/data/infore_datasets/prepare_infore_25h.py --split_dataset
     ```
 
-3. **VLSP 2020**:
+### **VLSP 2020**:
   * The training and testing manifest of this datasets are created by mapping the dictionary of scripts and audio path from traing and test set
   * Here we have 2 set datasets. Therefore, in order to create the manifest, we run the following command:
     ```sh
@@ -122,7 +122,7 @@ This section contains script for creating the *training* and *testing* manifest 
     ```
   * *number* is the value for which set we need to create training and testing manifest
 
-4. **VLSP 2021**:
+### **VLSP 2021**:
   * The training and testing manifest of this datasets are created by mapping the dictionary of scripts and audio path from traing and test set
     ```sh
     python3 conformer_asr/data/prepare_vlsp2021.py
@@ -173,16 +173,88 @@ This section contains script for creating the *training* and *testing* manifest 
 In the **training_config.yml**, we are able to configure which data we want to train by modify the boolean parameter
 
 General Data Training:
-* use_common_voice
-* use_vivos
+* use_common_voice:
+  * Total hours: 0.66
+  * Training data:
+    * Hours: 0.44
+    * Numbef of audios: 417
+  * Testing data:
+    * Hours: 0.22
+    * Numbef of audios: 199 
+
+* use_vivos:
+  * Total hours: 15.67
+  * Training data:
+    * Hours: 14.92
+    * Numbef of audios: 11660
+  * Testing data:
+    * Hours: 0.75
+    * Numbef of audios: 760 
+
 * use_vlsp2020_set1
+  * Total hours: 121.59
+  * Training data:
+    * Hours: 114.09
+    * Numbef of audios: 118950
+  * Testing data:
+    * Hours: 7.5
+    * Numbef of audios: 7500 
+
 * use_vlsp2020_set2
+  * Total hours: 87.81
+  * Training data:
+    * Hours: 81.8
+    * Numbef of audios: 42152
+  * Testing data:
+    * Hours: 6.01
+    * Numbef of audios: 18843 
+
+* use_vlsp2021
+  * Total hours: 23.59
+  * Training data:
+    * Hours: 19.84
+    * Numbef of audios: 15720
+  * Testing data:
+    * Hours: 3.75
+    * Numbef of audios: 1291 
+
 * use_infore_25h
+  * Total hours: 24.86
+  * Training data:
+    * Hours: 22.38
+    * Numbef of audios: 13338
+  * Testing data:
+    * Hours: 2.48
+    * Numbef of audios: 1482 
+
 * use_infore_415h
+  * Total hours: 330.73
+  * Training data:
+    * Hours: 297.78
+    * Numbef of audios: 220517
+  * Testing data:
+    * Hours: 32.96
+    * Numbef of audios: 24502 
 
 Collected Data Training
 * use_viettel
+  * Total hours: 4.97
+  * Training data:
+    * Hours: 4.35
+    * Numbef of audios: 14001
+  * Testing data:
+    * Hours: 0.62
+    * Numbef of audios: 1976 
+
 * use_viettel_assistant
+  * Total hours: 0.36
+  * Training data:
+    * Hours: 0.3
+    * Numbef of audios: 850
+  * Testing data:
+    * Hours: 0.06
+    * Numbef of audios: 170 
+
 * use_fpt
 * use_zalo
 
@@ -217,7 +289,7 @@ In this section, we create the tokenizers for Conformer model
 1. Create Tokenizer directory by execute the following command:
     ```sh
     export PYTHONPATH=$PWD
-    python3 conformer_asr/tokenizer/create_manifest_dataset.py
+    python3 conformer_asr/tokenizer/create_tokenizer.py
     ```
 2. Then the tokenizers directory will be store in the folder **/home/khoatlv/Conformer_ASR/tokenizers** with name *tokenizers_conformer_{timestamp}*
 3. Modify the attribute *training.tokenizer.tokenizer_dir* in the **training_config.yml** with new value *tokenizers_conformer_{timestamp}* created above
@@ -246,20 +318,6 @@ In this section, we create the tokenizers for Conformer model
   python3 conformer_asr/training/train_conformer.py
   ```
   
-
-<p align="right">(<a href="#top">back to top</a>)</p>
-* Next-url
-* [![React][React.js]][React-url]
-* [![Vue][Vue.js]][Vue-url]
-* [![Angular][Angular.io]][Angular-url]
-* [![Svelte][Svelte.dev]][Svelte-url]
-* [![Laravel][Laravel.com]][Laravel-url]
-* [![Bootstrap][Bootstrap.com]][Bootstrap-url]
-* [![JQuery][JQuery.com]][JQuery-url]
-
-
-
-
 <!-- GETTING STARTED -->
 ## Getting Started
 
@@ -354,9 +412,9 @@ Distributed under the MIT License. See `LICENSE.txt` for more information.
 <!-- CONTACT -->
 ## Contact
 
-Your Name - [@your_twitter](https://twitter.com/your_username) - email@example.com
+truong Khoa - [@khoatruong1799](https://twitter.com/khoatruong1799) - khoa.truong1799@gmail.com
 
-Project Link: [https://github.com/your_username/repo_name](https://github.com/your_username/repo_name)
+Project Link: [https://github.com/truongkhoa1799/ASR_Nemo](https://github.com/truongkhoa1799/ASR_Nemo)
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

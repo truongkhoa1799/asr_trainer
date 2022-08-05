@@ -82,6 +82,9 @@ def summarize_dataset(config):
         if dev_manifest is not None:
             num_dev_data = os.popen(f"wc -l {dev_manifest}").read().strip()
             _, total_duration_dev = read_manifest(dev_manifest, ignore_data=True)
+        else:
+            num_dev_data = ""
+            total_duration_dev = 0
             
         total_hours = round((total_duration_train+total_duration_test+total_duration_dev)/3600, 2)
         LOGGER.log_info(f"Dataset {dataset} with total hours: {total_hours}")

@@ -195,5 +195,5 @@ def create_manifest(config):
 if __name__ == "__main__":
     create_manifest(config)
     train_data_processed, test_data_processed = preprocessing_data(config)
-    # extract_character_set(config, train_data_processed, test_data_processed)
+    extract_character_set(config, train_data_processed, test_data_processed)
     # remove_invalid_file()
