@@ -1,14 +1,15 @@
 import os
 import json
 import sys
-PROJECT_DIR = "/".join(os.getcwd().split('/')[:-1])
-sys.path.append(PROJECT_DIR)
-from Conformer_ASR.scripts.utils import config, Logger, Config
+import argparse
+from typing import TypedDict
+from conformer_asr.utils import config, Logger, Config
 
 LOGGER = Logger("CREATE__EVALUATE_BEAM_SEARCH_DECODING")
-lm_config = config.get_config(["lm"])
-train_manifest_cleaned = config.get_config(["training", "manifest", "train_manifest_cleaned"])
-test_manifest_cleaned = config.get_config(["training", "manifest", "test_manifest_cleaned"])
+class CreateLMConfig(TypedDict):
+    lm_config: str
+    train_manifest_cleaned: str
+    test_manifest_cleaned: str
 
 def save_text_file(data, text_path):
     data = "\n".join(data)
@@ -41,30 +42,31 @@ def create_text_file_from_manifest(manifest_path, text_file):
         LOGGER.log_info(f"\t\tSave {len(text_data)} text to files")
         text_data = []
     
-def create_lm_model():
+def create_lm_model(config):
     LOGGER.log_info("Start creating Beam Search Decoding")
     
     LOGGER.log_info("\tExtract text in training and testing manifest")
-    os.system(f"cat {train_manifest_cleaned} {test_manifest_cleaned} > {lm_config.data.train_test_manifest}")
-    create_text_file_from_manifest(lm_config.data.train_test_manifest, lm_config.data.manifest_data)
+    os.system(f"cat {config['train_manifest_cleaned']} {config['test_manifest_cleaned']} > {config['lm_config'].data.train_test_manifest}")
+    create_text_file_from_manifest(config['lm_config'].data.train_test_manifest, config['lm_config'].data.manifest_data)
     
     LOGGER.log_info("\tConcate Manifest data and Assistant data")
-    os.system(f"cat {lm_config.data.manifest_data} {lm_config.data.assistant_data} > {lm_config.data.all_data}")
-    num_manifest_data = os.popen(f"wc -l {lm_config.data.manifest_data}").read()
-    num_assistant_data = os.popen(f"wc -l {lm_config.data.assistant_data}").read()
-    num_all_data = os.popen(f"wc -l {lm_config.data.all_data}").read()
+    os.system(f"cat {config['lm_config'].data.manifest_data} {config['lm_config'].data.assistant_data} > {config['lm_config'].data.all_data}")
+    num_manifest_data = os.popen(f"wc -l {config['lm_config'].data.manifest_data}").read()
+    num_assistant_data = os.popen(f"wc -l {config['lm_config'].data.assistant_data}").read()
+    num_all_data = os.popen(f"wc -l {config['lm_config'].data.all_data}").read()
     LOGGER.log_info(f"\t\t{num_manifest_data.strip()}")
     LOGGER.log_info(f"\t\t{num_assistant_data.strip()}")
     LOGGER.log_info(f"\t\t{num_all_data.strip()}")
     
-    run_script = f"python3 {lm_config.kenlm.train_kenlm} \
-    --nemo_model_file {lm_config.model.asr_path} \
-    --train_file {lm_config.data.all_data} \
-    --kenlm_bin_path {lm_config.kenlm.kenlm_bin} \
-    --kenlm_model_file {lm_config.model.kenlm} \
-    --ngram_length {lm_config.model.ngram_length}"
+    run_script = f"python3 {config['lm_config'].kenlm.train_kenlm} \
+    --nemo_model_file {config['lm_config'].model.asr_path} \
+    --train_file {config['lm_config'].data.all_data} \
+    --kenlm_bin_path {config['lm_config'].kenlm.kenlm_bin} \
+    --kenlm_model_file {config['lm_config'].model.kenml_model_file} \
+    --ngram_length {config['lm_config'].model.ngram_length}"
 
     LOGGER.log_info("\tStart training Beamserach Model")
+    # print(run_script)
     os.system(run_script)
     print()
 
@@ -94,5 +96,21 @@ def eval_lm_model():
     os.system(eval_script)
     LOGGER.log_info(f"Finish Evaludating Beam Search Decoding")
 if __name__ == "__main__":
-    create_lm_model()
-    # eval_lm_model()
+    parser = argparse.ArgumentParser()
+    parser.add_argument('-c', '--create', action='store_true', help='create language model')
+    parser.add_argument('-e', '--evaluate', action='store_true', help='evaluate language model')
+    args = parser.parse_args()
+    
+    lm_config = config.get_config(["lm"])
+    train_manifest_cleaned = config.get_config(["training", "manifest", "train_manifest_cleaned"])
+    test_manifest_cleaned = config.get_config(["training", "manifest", "test_manifest_cleaned"])
+    
+    if args.create:
+        create_lm_config = CreateLMConfig(
+            lm_config=lm_config,
+            train_manifest_cleaned=train_manifest_cleaned,
+            test_manifest_cleaned=test_manifest_cleaned
+        )
+        create_lm_model(create_lm_config)
+    elif args.evaluate:
+        eval_lm_model()

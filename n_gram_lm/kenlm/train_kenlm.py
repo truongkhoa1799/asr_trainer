@@ -1,38 +1,3 @@
-# Copyright (c) 2020, NVIDIA CORPORATION.  All rights reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-#
-
-
-# This script would train an N-gram language model with KenLM library (https://github.com/kpu/kenlm) which can be used
-# with the beam search decoders on top of the ASR models. This script supports both character level and BPE level
-# encodings and models which is detected automatically from the type of the model.
-# After the N-gram model is trained, and stored in the binary format, you may use
-# 'scripts/ngram_lm/eval_beamsearch_ngram.py' to evaluate it on an ASR model.
-#
-# You need to install the KenLM library and also the beam search decoders to use this feature. Please refer
-# to 'scripts/ngram_lm/install_beamsearch_decoders.sh' on how to install them.
-#
-# USAGE: python train_kenlm.py --nemo_model_file <path to the .nemo file of the model> \
-#                              --train_file <path to the training text or JSON manifest file \
-#                              --kenlm_bin_path <path to the bin folder of KenLM library> \
-#                              --kenlm_model_file <path to store the binary KenLM model> \
-#                              --ngram_length <order of N-gram model>
-#
-# After training is done, the binary LM model is stored at the path specified by '--kenlm_model_file'.
-# You may find more info on how to use this script at:
-# https://docs.nvidia.com/deeplearning/nemo/user-guide/docs/en/main/asr/asr_language_modeling.html
-
 import argparse
 import logging
 import os
@@ -47,12 +12,6 @@ sys.path.append("/home/khoatlv/Conformer_ASR")
 import nemo.collections.asr as nemo_asr
 from nemo.utils import logging
 
-"""
-NeMo's beam search decoders only support char-level encodings. In order to make it work with BPE-level encodings, we
-use a trick to encode the sub-word tokens of the training data as unicode characters and train a char-level KenLM. 
-TOKEN_OFFSET is the offset in the unicode table to be used to encode the BPE sub-words. This encoding scheme reduces 
-the required memory significantly, and the LM and its binary blob format require less storage space.
-"""
 TOKEN_OFFSET = 100
 
 CHUNK_SIZE = 8192

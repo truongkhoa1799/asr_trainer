@@ -19,6 +19,10 @@
       </ul>
     </li>
     <li><a href="#prepare-datasets">Prepare Datasets</a></li>
+    <ul>
+        <li><a href="#infore-415h-dataset">Infore 415H dataset</a></li>
+        <li><a href="#infore-25h-dataset">Infore 25H dataset</a></li>
+      </ul>
     <li><a href="#roadmap">Roadmap</a></li>
     <li><a href="#contributing">Contributing</a></li>
     <li><a href="#license">License</a></li>
@@ -90,7 +94,7 @@ Based on the result of the below steps, we can remove bad data in the evaluation
 <!-- PREPARE DATASETS -->
 ## Prepare Datasets
 This section contains script for creating the *training* and *testing* manifest of datasets
-### **Infore 415H dataset**:
+### Infore 415H dataset:
   * This datasets is the VLSP 2019
   * In other to create *training* and *testing* manifest for this dataset, we:  
     1. Create manifest from the orginal manifest (*data_book_train_relocated.json*) by replace the directory of wave data in this manifest with the one we store audio (*book_relocated*)
@@ -103,7 +107,7 @@ This section contains script for creating the *training* and *testing* manifest 
     python3 conformer_asr/data/infore_datasets/prepare_infore_415h.py --split_dataset
     ```
 
-### **Infore 25H dataset**:
+### Infore 25H dataset:
   * In other to create *training* and *testing* manifest for this dataset, we:  
     1. Create manifest from the list of waves and scripts by matching the value of 2 dictionary.
     ```sh
@@ -114,7 +118,7 @@ This section contains script for creating the *training* and *testing* manifest 
     python3 conformer_asr/data/infore_datasets/prepare_infore_25h.py --split_dataset
     ```
 
-### **VLSP 2020**:
+### VLSP 2020:
   * The training and testing manifest of this datasets are created by mapping the dictionary of scripts and audio path from traing and test set
   * Here we have 2 set datasets. Therefore, in order to create the manifest, we run the following command:
     ```sh
@@ -122,7 +126,7 @@ This section contains script for creating the *training* and *testing* manifest 
     ```
   * *number* is the value for which set we need to create training and testing manifest
 
-### **VLSP 2021**:
+### VLSP 2021:
   * The training and testing manifest of this datasets are created by mapping the dictionary of scripts and audio path from traing and test set
     ```sh
     python3 conformer_asr/data/prepare_vlsp2021.py
