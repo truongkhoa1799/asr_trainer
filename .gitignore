@@ -14,9 +14,7 @@ n_gram_lm/data/
 n_gram_lm/eval_beamsearch
 n_gram_lm/n_gram_lm_model
 
-nemo/
 tokenizers/
-
 
 
 scripts/evaluation/eval_asr_model
@@ -24,3 +22,15 @@ scripts/evaluation/eval_data
 scripts/evaluation/manifests
 scripts/evaluation/wav2vec_models
 conformer_asr/__pycache__/
+
+
+apex/__pycache__/
+apex/*/__pycache__/
+apex/*/*/__pycache__/
+
+nemo/__pycache__/
+nemo/*/__pycache__/
+nemo/*/*/__pycache__/
+nemo/*/*/*/__pycache__/
+nemo/*/*/*/*/__pycache__/
+nemo/*/*/*/*/*/__pycache__/
