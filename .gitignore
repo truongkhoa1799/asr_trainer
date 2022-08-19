@@ -10,8 +10,6 @@ docker/nova_asr_imgage.tar
 experiments/
 log/
 
-models/
-
 n_gram_lm/data/
 n_gram_lm/eval_beamsearch
 n_gram_lm/n_gram_lm_model
@@ -25,6 +23,4 @@ scripts/evaluation/eval_asr_model
 scripts/evaluation/eval_data
 scripts/evaluation/manifests
 scripts/evaluation/wav2vec_models
-conformer_asr/__pycache__/utils.cpython-38.pyc
-conformer_asr/__pycache__/utils.cpython-38.pyc
-conformer_asr/__pycache__/utils.cpython-38.pyc
+conformer_asr/__pycache__/
