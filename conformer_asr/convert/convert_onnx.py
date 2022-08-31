@@ -60,30 +60,32 @@ if __name__ == "__main__":
         map_location=args.device
     )
     print("Done load Nemo model")
+    print(asr_model.state_dict().keys())
+    torch.save(asr_model.state_dict(), "/home/khoatlv/ASR_Nemo/models/conformer_250")
     
-    print("Convert Nemo model")
-    asr_model.export(
-        args.onnx_model_path,
-        onnx_opset_version=13
-    )
-    print("Done convert Nemo model")
+    # print("Convert Nemo model")
+    # asr_model.export(
+    #     args.onnx_model_path,
+    #     onnx_opset_version=13
+    # )
+    # print("Done convert Nemo model")
     
-    ort_session = onnxruntime.InferenceSession(
-        args.onnx_model_path,
-        providers=['CPUExecutionProvider']
-    )
+    # ort_session = onnxruntime.InferenceSession(
+    #     args.onnx_model_path,
+    #     providers=['CPUExecutionProvider']
+    # )
     
-    print("Input ONNX model:")
-    for input in ort_session.get_inputs(): 
-        print(f"\t{input}")
+    # print("Input ONNX model:")
+    # for input in ort_session.get_inputs(): 
+    #     print(f"\t{input}")
         
-    print("Output ONNX model:")
-    for output in ort_session.get_outputs():
-        print(f"\t{input}")
+    # print("Output ONNX model:")
+    # for output in ort_session.get_outputs():
+    #     print(f"\t{input}")
         
-    print("Testing inference ONNX model")
-    wav_path = "/home/khoatlv/ASR_Nemo/conformer_asr/convert/test_inference.wav"
-    data, sr = librosa.load(wav_path, sr=16000)
-    a = infer_signal(data, ort_session, asr_model)
-    print(f"Testing inference ONNX model result: {a[0][0]}")
+    # print("Testing inference ONNX model")
+    # wav_path = "/home/khoatlv/ASR_Nemo/conformer_asr/convert/test_inference.wav"
+    # data, sr = librosa.load(wav_path, sr=16000)
+    # a = infer_signal(data, ort_session, asr_model)
+    # print(f"Testing inference ONNX model result: {a[0][0]}")
     

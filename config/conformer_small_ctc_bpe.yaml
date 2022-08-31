@@ -30,7 +30,7 @@ model:
   sample_rate: 16000
   log_prediction: true # enables logging sample predictions in the output during training
   ctc_reduction: 'mean_batch'
-  num_workers: 16
+  num_workers: 24
 
   train_ds:
     manifest_filepath: ???
@@ -166,7 +166,7 @@ model:
 
 trainer:
   devices: 1 # number of gpus
-  max_epochs: 300
+  max_epochs: 200
   max_steps: -1 # computed at runtime if not set
   num_nodes: 1
   accelerator: gpu
@@ -178,8 +178,8 @@ trainer:
   val_check_interval: 0.25 # Set to 0.25 to check 4 times per epoch, or an int for number of iterations
   check_val_every_n_epoch: 1
   precision: 16
-  amp_backend: apex
-  amp_level: 'O1'
+  # amp_backend: apex
+  # amp_level: 'O1'
   sync_batchnorm: false
   benchmark: false
 

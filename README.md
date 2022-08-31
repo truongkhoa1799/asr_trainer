@@ -53,7 +53,7 @@
    ```
 3. Install evironment requirements
    ```sh
-   cd Conformer_ASR/docker/ && pip3 install -r requirements.txt
+   cd ASR_Nemo/docker/ && pip3 install -r requirements.txt
    ```
 
 <!-- Evaluate ASR dataset -->
