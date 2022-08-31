@@ -1,6 +1,6 @@
 Hydra==2.5                
 hydra-core==1.1.1
-pytorch-lightning==1.5.10 
+# pytorch-lightning==1.5.10 
 omegaconf==2.1.1
 braceexpand==0.1.7
 webdataset==0.2.5
@@ -21,4 +21,4 @@ jiwer==2.3.0
 huggingface-hub==0.8.1
 pytorch-lightning==1.6.5
 openpyxl==3.0.10
-onnxruntime --no-dependencies
+# onnxruntime --no-dependencies

@@ -22,6 +22,7 @@ scripts/evaluation/eval_data
 scripts/evaluation/manifests
 scripts/evaluation/wav2vec_models
 conformer_asr/__pycache__/
+conformer_asr/__pycache__/utils.cpython-38.pyc
 
 
 apex/__pycache__/
