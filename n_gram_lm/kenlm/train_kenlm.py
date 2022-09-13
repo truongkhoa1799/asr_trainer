@@ -50,7 +50,7 @@ def main():
     if args.nemo_model_file.endswith('.nemo'):
         model = nemo_asr.models.EncDecCTCModel.restore_from(
             args.nemo_model_file, 
-            map_location='cuda',
+            map_location='cpu',
         )
     else:
         logging.warning(

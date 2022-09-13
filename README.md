@@ -45,11 +45,11 @@
 ### Start image
 1. Create container
    ```sh
-   docker create --gpus all -it --rm -v /mnt/8T_Disk2/khoatlv:/home/khoatlv --shm-size=12g --ulimit memlock=-1 --ulimit  stack=67108864 --device=/dev/sda --name base_nemo nova/asr
+   docker create --gpus all -it --rm -v /mnt/8T_Disk2/khoatlv:/home/khoatlv --shm-size=12g --ulimit memlock=-1 --ulimit  stack=67108864 --device=/dev/sda --name train_asr khoatr1799/nova_asr_image
    ```
 2. Start and enter container
    ```sh
-   docker container start base_nemo && docker exec -it base_nemo bash
+   docker container start train_asr && docker exec -it train_asr bash
    ```
 3. Install evironment requirements
    ```sh

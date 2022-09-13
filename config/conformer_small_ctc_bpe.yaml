@@ -147,8 +147,8 @@ model:
 
   optim:
     name: novograd
-    lr: 0.025 ## From pretrained
-    # lr: 0.001 ## From checkpoint 98 epoch
+    # lr: 0.025 ## From pretrained
+    lr: 0.003 ## From checkpoint 98 epoch
 
     # optimizer arguments
     betas: [0.8, 0.25]
@@ -159,14 +159,14 @@ model:
       name: CosineAnnealing
       warmup_steps: null
       # number of epochs when multiply with epoch 
-      warmup_ratio: 0.1 ## From pretrained
-      # warmup_ratio: 0.03 ## From checkpoint 98 epoch
+      # warmup_ratio: 0.1 ## From pretrained
+      warmup_ratio: null ## From checkpoint 98 epoch
       min_lr: 1e-9
       last_epoch: -1
 
 trainer:
   devices: 1 # number of gpus
-  max_epochs: 200
+  max_epochs: 35
   max_steps: -1 # computed at runtime if not set
   num_nodes: 1
   accelerator: gpu
@@ -178,8 +178,8 @@ trainer:
   val_check_interval: 0.25 # Set to 0.25 to check 4 times per epoch, or an int for number of iterations
   check_val_every_n_epoch: 1
   precision: 16
-  # amp_backend: apex
-  # amp_level: 'O1'
+  amp_backend: apex
+  amp_level: 'O1'
   sync_batchnorm: false
   benchmark: false
 

@@ -137,11 +137,12 @@ training:
   
   model:
     config: "/home/khoatlv/ASR_Nemo/config/conformer_small_ctc_bpe.yaml"
-    finetuned_model: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_small_epoch=98.nemo"
+    # finetuned_model: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_small_epoch=98.nemo"
+    finetuned_model: "/home/khoatlv/ASR_Nemo/experiments/old_checkpoint/2022-09-01/epoch_160.nemo"
     freeze_encoder: False
     device: 'cuda'
 
-    use_pretrained: True
+    use_pretrained: False
     from_pretrained: "stt_en_conformer_ctc_small" 
   
   wandb:
@@ -167,7 +168,7 @@ lm:
   kenlm:
     train_kenlm: "/home/khoatlv/ASR_Nemo/n_gram_lm/kenlm/train_kenlm.py"
     eval_ngram: "/home/khoatlv/ASR_Nemo/n_gram_lm/kenlm/eval_beamsearch_ngram.py"
-    kenlm_bin: "/home/khoatlv/ASR_Nemo/decoders/kenlm/build/bin"
+    kenlm_bin: "/home/khoatlv/ASR_Nemo/docker/decoders/kenlm/build/bin"
   
   model:
     n_gram_model: "/home/khoatlv/ASR_Nemo/n_gram_lm/n_gram_lm_model"

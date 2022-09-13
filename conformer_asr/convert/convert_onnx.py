@@ -3,7 +3,7 @@ import torch
 import librosa
 import argparse
 import numpy as np
-import onnxruntime
+# import onnxruntime
 import pytorch_lightning as ptl
 from omegaconf import OmegaConf
 from torch.utils.data import DataLoader
@@ -59,16 +59,16 @@ if __name__ == "__main__":
         args.nemo_model_path,
         map_location=args.device
     )
-    print("Done load Nemo model")
-    print(asr_model.state_dict().keys())
-    torch.save(asr_model.state_dict(), "/home/khoatlv/ASR_Nemo/models/conformer_250")
+    # print("Done load Nemo model")
+    # print(asr_model.state_dict().keys())
+    # torch.save(asr_model.state_dict(), "/home/khoatlv/ASR_Nemo/models/conformer_250")
     
-    # print("Convert Nemo model")
-    # asr_model.export(
-    #     args.onnx_model_path,
-    #     onnx_opset_version=13
-    # )
-    # print("Done convert Nemo model")
+    print("Convert Nemo model")
+    asr_model.export(
+        args.onnx_model_path,
+        onnx_opset_version=13
+    )
+    print("Done convert Nemo model")
     
     # ort_session = onnxruntime.InferenceSession(
     #     args.onnx_model_path,

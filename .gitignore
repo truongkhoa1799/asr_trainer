@@ -35,3 +35,7 @@ nemo/*/*/__pycache__/
 nemo/*/*/*/__pycache__/
 nemo/*/*/*/*/__pycache__/
 nemo/*/*/*/*/*/__pycache__/
+nemo/collections/asr/parts/numba/rnnt_loss/utils/__pycache__/
+nemo/collections/asr/parts/numba/rnnt_loss/utils/cpu_utils/__pycache__/
+nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/__pycache__/
+n_gram_lm/kenlm/__pycache__/

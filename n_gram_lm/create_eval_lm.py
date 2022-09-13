@@ -25,6 +25,7 @@ def save_text_file(data, text_path):
 def create_text_file_from_manifest(manifest_path, text_file):
     if os.path.exists(text_file): os.remove(text_file)
     text_data = []
+    count = 0
     with open(manifest_path, 'r') as f:
         for line in f.readlines():
             line = line.replace("\n", "")
@@ -32,7 +33,8 @@ def create_text_file_from_manifest(manifest_path, text_file):
             text_data.append(data["text"])
 
             if len(text_data) % 10000 == 0:
-                LOGGER.log_info(f"\t\tSave {len(text_data)} text to files")
+                count += 10000
+                LOGGER.log_info(f"\t\tSave {count} text to files")
                 save_text_file(data=text_data, text_path=text_file)
                 text_data = []
         f.close()
