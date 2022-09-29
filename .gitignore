@@ -11,6 +11,8 @@ experiments/
 log/
 
 n_gram_lm/data/
+n_gram_lm/__pycache__
+n_gram_lm/*/__pycache__
 n_gram_lm/eval_beamsearch
 n_gram_lm/n_gram_lm_model
 
@@ -35,7 +37,20 @@ nemo/*/*/__pycache__/
 nemo/*/*/*/__pycache__/
 nemo/*/*/*/*/__pycache__/
 nemo/*/*/*/*/*/__pycache__/
+
 nemo/collections/asr/parts/numba/rnnt_loss/utils/__pycache__/
 nemo/collections/asr/parts/numba/rnnt_loss/utils/cpu_utils/__pycache__/
 nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/__pycache__/
-n_gram_lm/kenlm/__pycache__/
+
+models/onnx/test.onnx
+models/conformer/Conformer_small_Model_Language_vi_epoch=250.onnx
+n_gram_lm/kenlm/__pycache__/kenlm_utils.cpython-38.pyc
+nemo/collections/asr/parts/numba/rnnt_loss/utils/__pycache__/__init__.cpython-38.pyc
+nemo/collections/asr/parts/numba/rnnt_loss/utils/__pycache__/global_constants.cpython-38.pyc
+nemo/collections/asr/parts/numba/rnnt_loss/utils/__pycache__/rnnt_helper.cpython-38.pyc
+nemo/collections/asr/parts/numba/rnnt_loss/utils/cpu_utils/__pycache__/__init__.cpython-38.pyc
+nemo/collections/asr/parts/numba/rnnt_loss/utils/cpu_utils/__pycache__/cpu_rnnt.cpython-38.pyc
+nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/__pycache__/__init__.cpython-38.pyc
+nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/__pycache__/gpu_rnnt_kernel.cpython-38.pyc
+nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/__pycache__/gpu_rnnt.cpython-38.pyc
+nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/__pycache__/reduce.cpython-38.pyc

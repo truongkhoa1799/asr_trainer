@@ -2,8 +2,13 @@ import os
 import json
 import sys
 import argparse
+from pathlib import Path
 from typing import TypedDict
 from conformer_asr.utils import config, Logger, Config
+
+'''
+python3 /home/khoatlv/ASR_Nemo/n_gram_lm/create_eval_lm.py -c
+'''
 
 LOGGER = Logger("CREATE__EVALUATE_BEAM_SEARCH_DECODING")
 class CreateLMConfig(TypedDict):
@@ -27,7 +32,7 @@ def create_text_file_from_manifest(manifest_path, text_file):
     text_data = []
     count = 0
     with open(manifest_path, 'r') as f:
-        for line in f.readlines():
+        for line in f:
             line = line.replace("\n", "")
             data = json.loads(line)
             text_data.append(data["text"])
@@ -37,7 +42,6 @@ def create_text_file_from_manifest(manifest_path, text_file):
                 LOGGER.log_info(f"\t\tSave {count} text to files")
                 save_text_file(data=text_data, text_path=text_file)
                 text_data = []
-        f.close()
         
     if len(text_data) != 0:
         save_text_file(data=text_data, text_path=text_file)
@@ -47,16 +51,33 @@ def create_text_file_from_manifest(manifest_path, text_file):
 def create_lm_model(config):
     LOGGER.log_info("Start creating Beam Search Decoding")
     
-    LOGGER.log_info("\tExtract text in training and testing manifest")
+    if config['lm_config'].data.use_collected_data:
+        LOGGER.log_info("\tExtract texts in collected data directory to collected_data.txt")
+        collected_data_dir = Path(config['lm_config'].data.collected_data_dir)
+        collected_datas = list(collected_data_dir.glob("*.txt"))
+        script = f"cat "
+        for collected_data in collected_datas:
+            script += f"{collected_data.resolve()} "
+            
+        script += f"> {config['lm_config'].data.collected_data}"
+        os.system(script)
+    
+    LOGGER.log_info("\tExtract text in training and testing manifest to train_test_manifest")
     os.system(f"cat {config['train_manifest_cleaned']} {config['test_manifest_cleaned']} > {config['lm_config'].data.train_test_manifest}")
     create_text_file_from_manifest(config['lm_config'].data.train_test_manifest, config['lm_config'].data.manifest_data)
     
-    LOGGER.log_info("\tConcate Manifest data and Assistant data")
-    os.system(f"cat {config['lm_config'].data.manifest_data} {config['lm_config'].data.assistant_data} > {config['lm_config'].data.all_data}")
+    LOGGER.log_info("\tConcate Manifest data and Assistant data and collected data")
+    script = f'''cat {config['lm_config'].data.manifest_data} \
+        {config['lm_config'].data.assistant_data} \
+        {config['lm_config'].data.collected_data} > {config['lm_config'].data.all_data}'''
+    os.system(script)
+    
     num_manifest_data = os.popen(f"wc -l {config['lm_config'].data.manifest_data}").read()
+    num_collected_data = os.popen(f"wc -l {config['lm_config'].data.collected_data}").read()
     num_assistant_data = os.popen(f"wc -l {config['lm_config'].data.assistant_data}").read()
     num_all_data = os.popen(f"wc -l {config['lm_config'].data.all_data}").read()
     LOGGER.log_info(f"\t\t{num_manifest_data.strip()}")
+    LOGGER.log_info(f"\t\t{num_collected_data.strip()}")
     LOGGER.log_info(f"\t\t{num_assistant_data.strip()}")
     LOGGER.log_info(f"\t\t{num_all_data.strip()}")
     

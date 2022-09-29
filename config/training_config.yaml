@@ -34,6 +34,7 @@ prepare_data:
     test_data_dir: "/home/khoatlv/data/vlsp2020/vlsp2020_test_set_02/wav"
     invalid_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_invalid_set_02_manifest.json"
 
+    # Merge test and train into 1 file
     train_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_train_set_02_manifest.json"
     test_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_test_set_02_manifest.json"
 
@@ -97,7 +98,7 @@ training:
     use_vlsp2020_set2: True   # 43.000 files
     use_vlsp2021: True
     use_infore_25h: True
-    use_infore_415h: True
+    use_infore_415h: False
 
     # Data collected
     use_viettel: True
@@ -137,8 +138,8 @@ training:
   
   model:
     config: "/home/khoatlv/ASR_Nemo/config/conformer_small_ctc_bpe.yaml"
-    # finetuned_model: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_small_epoch=98.nemo"
-    finetuned_model: "/home/khoatlv/ASR_Nemo/experiments/old_checkpoint/2022-09-01/epoch_160.nemo"
+    finetuned_model: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_small_epoch=98.nemo"
+    # finetuned_model: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_epoch_200_v2.nemo"
     freeze_encoder: False
     device: 'cuda'
 
@@ -161,6 +162,9 @@ evaluation:
 lm:
   data:
     train_test_manifest: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/train_test_manifest.json"
+    use_collected_data: True
+    collected_data_dir: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/collected_data"
+    collected_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/collected_data.txt"
     all_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/all_data.txt"
     assistant_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/assistant_data.txt"
     manifest_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/manifest_data.txt"

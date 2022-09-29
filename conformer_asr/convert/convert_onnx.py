@@ -12,6 +12,13 @@ from nemo.core.classes import IterableDataset
 from nemo.core.neural_types import NeuralType, AudioSignal, LengthsType
 from conformer_asr.utils import config, Logger, Config
 
+'''
+python3 /home/khoatlv/ASR_Nemo/conformer_asr/convert/convert_onnx.py \
+    --nemo_model_path="/home/khoatlv/ASR_Nemo/experiments/old_checkpoint/2022-09-01/epoch_200.nemo" \
+    --onnx_model_path="/home/khoatlv/ASR_Nemo/models/conformer/Conformer_epoch_200_v2.onnx" \
+    --device='cuda'
+'''
+
 def to_numpy(tensor):
     return tensor.detach().cpu().numpy() if tensor.requires_grad else tensor.cpu().numpy()
 

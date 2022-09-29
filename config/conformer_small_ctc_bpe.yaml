@@ -148,7 +148,7 @@ model:
   optim:
     name: novograd
     # lr: 0.025 ## From pretrained
-    lr: 0.003 ## From checkpoint 98 epoch
+    lr: 0.001 ## From checkpoint 98 epoch
 
     # optimizer arguments
     betas: [0.8, 0.25]
@@ -160,13 +160,13 @@ model:
       warmup_steps: null
       # number of epochs when multiply with epoch 
       # warmup_ratio: 0.1 ## From pretrained
-      warmup_ratio: null ## From checkpoint 98 epoch
+      warmup_ratio: 0.02 ## From checkpoint 98 epoch
       min_lr: 1e-9
       last_epoch: -1
 
 trainer:
   devices: 1 # number of gpus
-  max_epochs: 35
+  max_epochs: 50
   max_steps: -1 # computed at runtime if not set
   num_nodes: 1
   accelerator: gpu
@@ -196,5 +196,5 @@ exp_manager:
   wandb_logger_kwargs:
     name: Conformer_small
     project: ASR
-  resume_if_exists: true
-  resume_ignore_no_checkpoint: true
+  # resume_if_exists: true
+  # resume_ignore_no_checkpoint: true
