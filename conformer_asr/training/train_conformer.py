@@ -67,6 +67,10 @@ if __name__ == "__main__":
             restore_path=training_config.model.finetuned_model,
             map_location=training_config.model.device
         )
+        asr_model.change_vocabulary(
+            new_tokenizer_dir=tokenizer_conformer_dir, 
+            new_tokenizer_type=tokenizer_type_cfg
+        )
     
     freeze_encoder = bool(training_config.model.freeze_encoder)
     if freeze_encoder:
