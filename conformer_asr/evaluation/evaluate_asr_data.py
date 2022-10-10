@@ -7,8 +7,10 @@ import librosa
 from typing import AnyStr, List, TypedDict
 import joblib
 from tqdm.auto import tqdm
-from joblib.parallel import Parallel
-from dataclasses import dataclass
+
+from functools import partial
+from multiprocessing import Pool
+
 
 import numpy as np
 import soundfile as sf
@@ -35,16 +37,15 @@ class EvaluationLog(TypedDict):
     wer: int = 0
 
 class EvaluationConfig(TypedDict):
-    manifest_path: str
+    original_manifest_path: str
     log_dir: str
     dataset_name: str
 
 class CleanConfig(TypedDict):
-    config
     manifest_path: str
-    clean_manifest_path: str
-    log_data_result_path: str
-    log_data_error_path: str
+    original_manifest_path: str
+    log_dir: str
+    dataset_name: str
     threshold_wer: float
 
 def get_decoder_ngram_model(tokenizer, ngram_lm_path):
@@ -106,7 +107,7 @@ def evaluate_data(config):
         Save audio_path of error_files
     '''
     dataset_name = config['dataset_name']
-    evaluatation_manifest_path = Path(config['manifest_path'])
+    evaluatation_manifest_path = Path(config['original_manifest_path'])
     log_directory = Path(config['log_dir']).joinpath(dataset_name)
     
     LOGGER.log_info(f"Evaluating data from dataset {dataset_name}")
@@ -163,111 +164,154 @@ def evaluate_data(config):
         error_result = "\n".join(error_files)
         fout.writelines(error_result + '\n')
         fout.close()
+
+
+def validate_evaluation_results(row, threshold):
+    '''
+    Validate evaluation results
+    Args: row
+    Results:
+        code:
+            - 1: rejected
+            - 0: accept
+        data: audio_path
+        
+    '''
+    row = row.replace("\n", "")
+    row_values = row.split(",")
+    audio_path = row_values[0]
+    wer = row_values[-1]
+    
+    if float(wer) > float(threshold):
+        return 1, audio_path
+    
+    return 0, audio_path
+
+def extract_error_results(audio_path):
+    audio_path = audio_path.replace("\n", "")
+    return audio_path
     
 def clean_bad_data(config):
+    '''
+    Clean error and audio with WER > threshold
+    '''
+    dataset_name = config['dataset_name']
     manifest_path = Path(config['manifest_path'])
-    clean_evaluatation_manifest_path = Path(config['clean_manifest_path'])
+    original_manifest_path = Path(config['original_manifest_path'])
+    log_directory = Path(config['log_dir']).joinpath(dataset_name)
     
-    log_data_result_path = Path(config['log_data_result_path'])
-    log_data_error_path = Path(config['log_data_error_path'])
-    
-    dataset_name = str(log_data_result_path.parent.name)
+    LOGGER.log_info(f"Cleaning data from dataset {dataset_name}")
+    log_data_result_path = log_directory.joinpath(f"{dataset_name}_result.log")
+    log_data_error_path = log_directory.joinpath(f"{dataset_name}_error.log")
     
     if not log_data_result_path.exists() or not log_data_error_path.exists():
         LOGGER.log_error("Invalid log_data_result_path or log_data_error_path")
         return
     
-    if not manifest_path.exists():
-        LOGGER.log_error("Invalid manifest_path")
+    if not original_manifest_path.exists():
+        LOGGER.log_error("Invalid original_manifest_path")
         return
     
-    if clean_evaluatation_manifest_path.exists():
-        clean_evaluatation_manifest_path.unlink(missing_ok=True)
+    if manifest_path.exists():
+        manifest_path.unlink(missing_ok=True)
         
+    def iterator(log_data_result_path, skip_first=False):
+        with open(log_data_result_path, 'r') as fin:
+            for idx, row in enumerate(fin.readlines()):
+                if skip_first and idx == 0: continue
+                yield row
+    
+    p = Pool(24)
+    iterator_evaluation_results = iterator(log_data_result_path, skip_first=True)
+    partial_evaluation_fn = partial(validate_evaluation_results, threshold=config['threshold_wer'])
+    validate_evaluation_results_map = p.imap_unordered(
+        partial_evaluation_fn,
+        tqdm(iterator_evaluation_results, desc="[Validate evaluation results]"),
+        chunksize=10,
+    )
+    
+    iterator_error_results = iterator(log_data_error_path, skip_first=False)
+    partial_error_fn = partial(extract_error_results)
+    extract_error_results_map = p.imap_unordered(
+        partial_error_fn,
+        tqdm(iterator_error_results, desc="[Validate error results]"),
+        chunksize=10,
+    )
+    
     list_bad_audio = list()
+    clean_data_manifests = []
     number_bad_audio = 0
     number_error_audio = 0
-    number_data_of_evaluatation_manifest = 0
+    number_evaluation_audio = 0
     
-    # Read list bad audio files
-    with open(log_data_result_path, mode="r") as f:
-        for idx, row in enumerate(f.readlines()):
-            if idx == 0: continue
-            
-            row = row.replace("\n", "")
-            row_values = row.split(",")
-            audio_path = row_values[0]
-            wer = row_values[-1]
-
-            if float(wer) >= float(config['threshold_wer']):
-                list_bad_audio.append(audio_path)
-                number_bad_audio += 1
-            
-        f.close()
-    
-    # Read list error files
-    with open(log_data_error_path, mode="r") as f:
-        for audio_path in f.readlines():
-            audio_path = audio_path.replace("\n", "")
+    for code, audio_path in validate_evaluation_results_map:
+        if code != 0:
             list_bad_audio.append(audio_path)
-            number_error_audio += 1
+            number_bad_audio += 1
+        
+    for audio_path in extract_error_results_map:
+        list_bad_audio.append(audio_path)
+        number_error_audio += 1
     
     # Extract audio from manifest except error and bad audio files
-    clean_evaluatation_manifest = []
-    with open(config['manifest_path'], mode="r") as f:
-        for row in f.readlines(): 
+    with open(original_manifest_path, mode="r") as fin:
+        for row in fin:
             row = row.replace("\n", "")
             json_row = json.loads(row)
             audio_path = json_row['audio_filepath']
             
             if audio_path not in list_bad_audio:
-                clean_evaluatation_manifest.append(row)
+                clean_data_manifests.append(row)
         
-            number_data_of_evaluatation_manifest += 1
+            number_evaluation_audio += 1
         
-        f.close()
-        
-    with open(clean_evaluatation_manifest_path, mode='w', encoding='utf-8') as fout:
-        data = '\n'.join(clean_evaluatation_manifest)
+    with open(manifest_path, mode='w', encoding='utf-8') as fout:
+        data = '\n'.join(clean_data_manifests)
         fout.writelines(data + '\n')
         fout.close()
         
-    LOGGER.log_info(f"Number of audio in evaluation manifest: {number_data_of_evaluatation_manifest}")
-    LOGGER.log_info(f"Number of audio in clean evaluation manifest: {len(clean_evaluatation_manifest)}")
+    LOGGER.log_info(f"Number of audio in evaluation manifest: {number_evaluation_audio}")
+    LOGGER.log_info(f"Number of audio in clean evaluation manifest: {len(clean_data_manifests)}")
     LOGGER.log_info(f"Number of error audio: {number_error_audio}")
     LOGGER.log_info(f"Number of audio with wer >= {config['threshold_wer']}: {number_bad_audio}")
 
 '''
 python3 conformer_asr/evaluation/evaluate_asr_data.py -e \
-    --manifest_path="/home/khoatlv/data/vlsp2021/manifests/vlsp2021_original_train_manifest.json" \
+    --original_manifest_path="/home/khoatlv/data/vlsp2021/manifests/vlsp2021_original_train_manifest.json" \
     --dataset_name="vlsp2021_train" \
     --log_dir="/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data"
+    
+python3 conformer_asr/evaluation/evaluate_asr_data.py -c \
+    --original_manifest_path="/home/khoatlv/data/vlsp2021/manifests/vlsp2021_original_train_manifest.json" \
+    --manifest_path="/home/khoatlv/data/vlsp2021/manifests/vlsp2021_train_manifest.json" \
+    --dataset_name="vlsp2021_train" \
+    --log_dir="/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data" \
+    --threshold_wer=0.2
 '''
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('-e', '--evaluation', action='store_true', help='evaluate datasets')
-    parser.add_argument('--manifest_path', default='', help='manifest path of evaluation dataset')
     parser.add_argument('--dataset_name', default='', help='name of evaluation dataset')
     parser.add_argument('--log_dir', default='', help='name of evaluation dataset')
-    parser.add_argument('--device', default='cpu', help='name of evaluation dataset')
+    parser.add_argument('--device', default='cuda', help='name of evaluation dataset')
+    
+    parser.add_argument('-e', '--evaluation', action='store_true', help='evaluate datasets')
+    parser.add_argument('--original_manifest_path', default='', help='manifest path of evaluation dataset')
 
     parser.add_argument('-c', '--clean_evaluation_dataset', action='store_true', help='clean evaluate datasets')
-    parser.add_argument('--log_data_result_path', default='', help='log result of evaluation step')
-    parser.add_argument('--log_data_error_path', default='', help='log error audio of evaluation step')
-    parser.add_argument('--clean_manifest_path', default='', help='clean manifest path of evaluation dataset')
+    parser.add_argument('--manifest_path', default='', help='manifest path of evaluation dataset')
     parser.add_argument('--threshold_wer', default=0.2, help='name of evaluation dataset')
     args = parser.parse_args()
     
     evaluation_config = config.get_config(["evaluation"])
     
     if args.evaluation:
-        if args.manifest_path == "" or args.dataset_name == "" or args.log_dir == "":
+        if args.original_manifest_path == "" or args.dataset_name == "" or args.log_dir == "":
             LOGGER.log_error("Invalid evaluation configuration")
             exit(-1)
         
         evaluation_dataset_config = EvaluationConfig(
-            manifest_path = args.manifest_path,
+            original_manifest_path = args.original_manifest_path,
             dataset_name = args.dataset_name,
             log_dir = args.log_dir
         )   
@@ -281,17 +325,16 @@ if __name__ == "__main__":
         evaluate_data(evaluation_dataset_config)
         
     elif args.clean_evaluation_dataset:
-        if args.log_data_result_path == "" or args.clean_manifest_path == ""\
-            or args.manifest_path == "" or args.log_data_error_path == "":
+        if args.manifest_path == "" or args.original_manifest_path == ""\
+            or args.log_dir == "" or args.dataset_name == "":
             LOGGER.log_error("Invalid clean dataset configuration")
             exit(-1)
         
         clean_dataset_config = CleanConfig(
-            config = evaluation_config,
             manifest_path = args.manifest_path,
-            clean_manifest_path = args.clean_manifest_path,
-            log_data_result_path = args.log_data_result_path,
-            log_data_error_path = args.log_data_error_path,
+            original_manifest_path = args.original_manifest_path,
+            log_dir = args.log_dir,
+            dataset_name = args.dataset_name,
             threshold_wer = args.threshold_wer,
         )
         clean_bad_data(clean_dataset_config)
