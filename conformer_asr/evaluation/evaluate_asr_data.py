@@ -26,7 +26,7 @@ from conformer_asr.utils import Logger, read_manifest, config
 processor = None
 model = None
 ngram_lm_model = None
-Logger = Logger(name="EVALUATING_ASR_DATA")
+LOGGER = Logger(name="EVALUATING_ASR_DATA")
 
 class EvaluationLog(TypedDict):
     audio_filepath: str
@@ -35,8 +35,8 @@ class EvaluationLog(TypedDict):
     wer: int = 0
 
 class EvaluationConfig(TypedDict):
-    config
     manifest_path: str
+    log_dir: str
     dataset_name: str
 
 class CleanConfig(TypedDict):
@@ -61,7 +61,7 @@ def get_decoder_ngram_model(tokenizer, ngram_lm_path):
     return decoder
 
 
-def transcribe_ASR(raw_signal):
+def transcribe_ASR(raw_signal, device='cpu'):
     """Transbribe audio signal to text
     
     Args:
@@ -76,7 +76,7 @@ def transcribe_ASR(raw_signal):
         signal,
         sampling_rate=16000,
         return_tensors="pt"
-    ).input_values.to("cuda")
+    ).input_values.to(device)
     logits = model(input_values).logits[0]
     beam_search_output = ngram_lm_model.decode(logits.cpu().detach().numpy(), beam_width=200)
     return beam_search_output
@@ -95,28 +95,40 @@ def save_log_result(log_data, log_data_result_path):
     f.close()
 
 def evaluate_data(config):
+    '''
+    Evaluating data for dataset
+    Args:
+        dataset_name: dataset name of evaluation dataset
+        evaluatation_manifest_path: manifest_path of evaluation dataset
+        log_directory: log_directory for storing result. Error and Resuls
+    Results:
+        Save result in format: [audio_filepath,ground_truth_text,transcribed_text,wer]
+        Save audio_path of error_files
+    '''
     dataset_name = config['dataset_name']
     evaluatation_manifest_path = Path(config['manifest_path'])
-    result_directory = Path(config['config'].result_directory)    
-    evaluation_dataset_result_directory = result_directory.joinpath(dataset_name)
-    if not evaluation_dataset_result_directory.exists():
-        evaluation_dataset_result_directory.mkdir(parents=True, exist_ok=True)
+    log_directory = Path(config['log_dir']).joinpath(dataset_name)
     
-    log_data_result_path = evaluation_dataset_result_directory.joinpath(f"{dataset_name}_result.log")
-    log_data_error_path = evaluation_dataset_result_directory.joinpath(f"{dataset_name}_error.log")
-
-    # Inititalize parameters
-    log_data = []
-    error_files = list()
+    LOGGER.log_info(f"Evaluating data from dataset {dataset_name}")
+    
+    if not log_directory.exists():
+        log_directory.mkdir(parents=True, exist_ok=True)
+    log_data_result_path = log_directory.joinpath(f"{dataset_name}_result.log")
+    log_data_error_path = log_directory.joinpath(f"{dataset_name}_error.log")
     
     # Clear old log results
     if log_data_result_path.exists(): 
+        log_data_result_path.unlink(missing_ok=True)
+    if log_data_error_path.exists(): 
         log_data_error_path.unlink(missing_ok=True)
-    if log_data_result_path.exists(): 
-        log_data_error_path.unlink(missing_ok=True)
+    
+    # Inititalize parameters
+    counts = 0
+    log_data = []
+    error_files = list()
         
     manifest_data, _ = read_manifest(str(evaluatation_manifest_path))
-    for idx, data in enumerate(manifest_data):
+    for data in tqdm(manifest_data, total=len(manifest_data), desc=f"Evaluating {dataset_name}"):
         try:
             signal, _ = librosa.load(data["audio_filepath"], sr=16000)
             transcribed_text = transcribe_ASR(signal)
@@ -134,15 +146,15 @@ def evaluate_data(config):
         except Exception as e:
             error_files.append(data["audio_filepath"])
         
-        if idx % 500 == 0:
-            Logger.log_info(f"Iteration {idx}")
+        counts += 1
+        if counts % 500 == 0:
             save_log_result(log_data, log_data_result_path)
-            log_data = []
+            log_data.clear()
         
-        # if idx >= 14: break
+        # if counts >= 14: break
 
     if len(log_data) != 0:
-        Logger.log_info("Save last data logs")
+        LOGGER.log_info("Save last data logs")
         save_log_result(log_data, log_data_result_path)
         log_data = []
     
@@ -162,11 +174,11 @@ def clean_bad_data(config):
     dataset_name = str(log_data_result_path.parent.name)
     
     if not log_data_result_path.exists() or not log_data_error_path.exists():
-        Logger.log_error("Invalid log_data_result_path or log_data_error_path")
+        LOGGER.log_error("Invalid log_data_result_path or log_data_error_path")
         return
     
     if not manifest_path.exists():
-        Logger.log_error("Invalid manifest_path")
+        LOGGER.log_error("Invalid manifest_path")
         return
     
     if clean_evaluatation_manifest_path.exists():
@@ -220,16 +232,25 @@ def clean_bad_data(config):
         fout.writelines(data + '\n')
         fout.close()
         
-    Logger.log_info(f"Number of audio in evaluation manifest: {number_data_of_evaluatation_manifest}")
-    Logger.log_info(f"Number of audio in clean evaluation manifest: {len(clean_evaluatation_manifest)}")
-    Logger.log_info(f"Number of error audio: {number_error_audio}")
-    Logger.log_info(f"Number of audio with wer >= {config['threshold_wer']}: {number_bad_audio}")
+    LOGGER.log_info(f"Number of audio in evaluation manifest: {number_data_of_evaluatation_manifest}")
+    LOGGER.log_info(f"Number of audio in clean evaluation manifest: {len(clean_evaluatation_manifest)}")
+    LOGGER.log_info(f"Number of error audio: {number_error_audio}")
+    LOGGER.log_info(f"Number of audio with wer >= {config['threshold_wer']}: {number_bad_audio}")
+
+'''
+python3 conformer_asr/evaluation/evaluate_asr_data.py -e \
+    --manifest_path="/home/khoatlv/data/vlsp2021/manifests/vlsp2021_original_train_manifest.json" \
+    --dataset_name="vlsp2021_train" \
+    --log_dir="/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data"
+'''
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('-e', '--evaluation', action='store_true', help='evaluate datasets')
     parser.add_argument('--manifest_path', default='', help='manifest path of evaluation dataset')
     parser.add_argument('--dataset_name', default='', help='name of evaluation dataset')
+    parser.add_argument('--log_dir', default='', help='name of evaluation dataset')
+    parser.add_argument('--device', default='cpu', help='name of evaluation dataset')
 
     parser.add_argument('-c', '--clean_evaluation_dataset', action='store_true', help='clean evaluate datasets')
     parser.add_argument('--log_data_result_path', default='', help='log result of evaluation step')
@@ -241,27 +262,28 @@ if __name__ == "__main__":
     evaluation_config = config.get_config(["evaluation"])
     
     if args.evaluation:
-        if args.manifest_path == "" or args.dataset_name == "":
-            Logger.log_error("Invalid evaluation configuration")
+        if args.manifest_path == "" or args.dataset_name == "" or args.log_dir == "":
+            LOGGER.log_error("Invalid evaluation configuration")
             exit(-1)
         
         evaluation_dataset_config = EvaluationConfig(
-            config = evaluation_config,
             manifest_path = args.manifest_path,
-            dataset_name = args.dataset_name
+            dataset_name = args.dataset_name,
+            log_dir = args.log_dir
         )   
-        Logger.log_info("Inititalize Wav2Vec2 Model...")
+        LOGGER.log_info("Inititalize Wav2Vec2 Model...")
         processor = Wav2Vec2Processor.from_pretrained(evaluation_config.model.wav2vec2_processor_path)
-        model = Wav2Vec2ForCTC.from_pretrained(evaluation_config.model.wav2vec2_model_path).to(torch.device('cuda'))
+        model = Wav2Vec2ForCTC.from_pretrained(evaluation_config.model.wav2vec2_model_path).to(torch.device(args.device))
         ngram_lm_model = get_decoder_ngram_model(processor.tokenizer, evaluation_config.model.lm_file_path)
-        Logger.log_info("Done Inititalize Wav2Vec2 Model")
+        LOGGER.log_info("Done Inititalize Wav2Vec2 Model")
+        print()
         
         evaluate_data(evaluation_dataset_config)
         
     elif args.clean_evaluation_dataset:
         if args.log_data_result_path == "" or args.clean_manifest_path == ""\
             or args.manifest_path == "" or args.log_data_error_path == "":
-            Logger.log_error("Invalid clean dataset configuration")
+            LOGGER.log_error("Invalid clean dataset configuration")
             exit(-1)
         
         clean_dataset_config = CleanConfig(

@@ -39,20 +39,8 @@ prepare_data:
     test_manifest: "/home/khoatlv/data/vlsp2020/manifests/vlsp2020_test_set_02_manifest.json"
 
   vlsp2021:
-    test_directory: "/home/khoatlv/data/vlsp2021/private_test"
-    train_directory: "/home/khoatlv/data/vlsp2021/training_set"
-
-    trainingset_indomain_data_dir: "/home/khoatlv/data/vlsp2021/trainingset-indomain/wav"
-    devset_data_dir: "/home/khoatlv/data/vlsp2021/VLSP-ASR-2021-labeled_devset/wav"
-
-    trainingset_indomain_transcript_path: "/home/khoatlv/data/vlsp2021/trainingset-indomain/transcript.txt"
-    devset_transcript_path: "/home/khoatlv/data/vlsp2021/VLSP-ASR-2021-labeled_devset/transcript.txt"
-
-    original_train_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_train_manifest.json"
-    original_test_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_test_manifest.json"
-
-    train_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_train_manifest_cleaned.json"
-    test_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_test_manifest_cleaned.json"
+    train_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_train_manifest.json"
+    test_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_test_manifest.json"
 
   viettel:
     manifest: "/home/khoatlv/data/data_collected/viettel/manifests/manifests.json"
@@ -80,8 +68,8 @@ prepare_data:
     train_manifest: "/home/khoatlv/data/common_voice/manifests/commonvoice_train_manifest.json"
   
   vivos:
-    test_manifest: "/home/khoatlv/data/vivos/manifests/test_manifest.json"
-    train_manifest: "/home/khoatlv/data/vivos/manifests/train_manifest.json"
+    train_manifest: "/home/khoatlv/data/vivos/manifests/vivos_train_manifest.json"
+    test_manifest: "/home/khoatlv/data/vivos/manifests/vivos_test_manifest.json"
 
 training:
   manifest:
@@ -156,18 +144,20 @@ evaluation:
     wav2vec2_model_path: "/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/wav2vec_models/CTCModel"
     lm_file_path: "/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/wav2vec_models/4-gram-lm_large.bin"
   
-  threshold_wer: 0.2
-  result_directory: "/home/khoatlv/ASR_Nemo/conformer_asr/evaluation/results/ASR_data"
 
 lm:
   data:
     train_test_manifest: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/train_test_manifest.json"
-    use_collected_data: True
+
+    use_collected_data: False
     collected_data_dir: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/collected_data"
     collected_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/collected_data.txt"
-    all_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/all_data.txt"
+    
     assistant_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/assistant_data.txt"
     manifest_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/manifest_data.txt"
+
+    all_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/all_data.txt"
+    # all_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/wakeup_word_data.txt"
   
   kenlm:
     train_kenlm: "/home/khoatlv/ASR_Nemo/n_gram_lm/kenlm/train_kenlm.py"
@@ -177,9 +167,11 @@ lm:
   model:
     n_gram_model: "/home/khoatlv/ASR_Nemo/n_gram_lm/n_gram_lm_model"
     model_name: "conformer-small"
-    ngram_length: 4
-    asr_path: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_small_Model_Language_vi_epoch=250.nemo"
     kenml_model_file: "${lm.model.n_gram_model}/${lm.model.ngram_length}-gram_${lm.model.model_name}_lm.bin"
+
+    ngram_length: 4
+    # asr_path: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_small_Model_Language_vi_epoch=250.nemo"
+    asr_path: "/home/khoatlv/ASR_Nemo/experiments/old_checkpoint/2022-10-08_tokenizer_512/Conformer_small_Model_Language_vi--val_wer=0.0862-epoch=164-v1.nemo"
   
 collect_viettel_data:
   assistant:

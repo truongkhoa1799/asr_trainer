@@ -67,19 +67,23 @@ def create_lm_model(config):
     create_text_file_from_manifest(config['lm_config'].data.train_test_manifest, config['lm_config'].data.manifest_data)
     
     LOGGER.log_info("\tConcate Manifest data and Assistant data and collected data")
-    script = f'''cat {config['lm_config'].data.manifest_data} \
-        {config['lm_config'].data.assistant_data} \
-        {config['lm_config'].data.collected_data} > {config['lm_config'].data.all_data}'''
+    script = f"cat {config['lm_config'].data.manifest_data} {config['lm_config'].data.assistant_data} "
+    if config['lm_config'].data.use_collected_data:
+        script += f"{config['lm_config'].data.collected_data} "
+    script += f"> {config['lm_config'].data.all_data}"
     os.system(script)
     
     num_manifest_data = os.popen(f"wc -l {config['lm_config'].data.manifest_data}").read()
-    num_collected_data = os.popen(f"wc -l {config['lm_config'].data.collected_data}").read()
     num_assistant_data = os.popen(f"wc -l {config['lm_config'].data.assistant_data}").read()
     num_all_data = os.popen(f"wc -l {config['lm_config'].data.all_data}").read()
+    
     LOGGER.log_info(f"\t\t{num_manifest_data.strip()}")
-    LOGGER.log_info(f"\t\t{num_collected_data.strip()}")
     LOGGER.log_info(f"\t\t{num_assistant_data.strip()}")
     LOGGER.log_info(f"\t\t{num_all_data.strip()}")
+    
+    if config['lm_config'].data.use_collected_data:
+        num_collected_data = os.popen(f"wc -l {config['lm_config'].data.collected_data}").read()
+        LOGGER.log_info(f"\t\t{num_collected_data.strip()}")
     
     run_script = f"python3 {config['lm_config'].kenlm.train_kenlm} \
     --nemo_model_file {config['lm_config'].model.asr_path} \

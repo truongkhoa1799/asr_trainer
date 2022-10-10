@@ -1,5 +1,6 @@
 import json
 import librosa
+from tqdm import tqdm
 from omegaconf import OmegaConf
 from sklearn.model_selection import train_test_split
 import logging
@@ -19,7 +20,8 @@ def read_manifest(manifest_path, ignore_data=False):
     
     if manifest_path is None: return manifest, total_duration
     with open(manifest_path, 'r') as f:
-        for line in f.readlines():
+        lines = f.readlines()
+        for line in tqdm(lines, total=len(lines), desc=f"Reading manifest data from {manifest_path}"):
             line = line.replace("\n", "")
             data = json.loads(line)
             total_duration += data["duration"]
@@ -34,7 +36,7 @@ def save_manifest(manifest_path, list_record):
         data = '\n'.join(json.dumps(i, ensure_ascii=False) for i in list_record)
         fout.writelines(data + '\n')
         fout.close()
-        
+
 def split_train_test_dataset(manifest_path, out_train_manifest, out_test_manifest, train_per):
     list_json_data, _ = read_manifest(manifest_path)
     train_dataset, test_dataset = train_test_split(list_json_data, train_size=train_per, test_size=1-train_per, random_state=42)

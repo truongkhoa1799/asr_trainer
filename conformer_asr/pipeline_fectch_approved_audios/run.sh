@@ -61,3 +61,14 @@ then
 else
     echo "Transform audios to processed audio and text "$TRANSFORMED_AUDIO_PATH
 fi
+echo ""
+
+echo "-------------------- Create manifests --------------------"
+python3 create_manifests.py TRANSFORMED_AUDIO_PATH=$TRANSFORMED_AUDIO_PATH
+if [ $? -eq 255 ];
+then
+    echo "Cannot create manifests"
+    exit 1
+else
+    echo "Create manifests at "$TRANSFORMED_AUDIO_PATH
+fi

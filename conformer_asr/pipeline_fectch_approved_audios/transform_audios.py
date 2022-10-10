@@ -1,15 +1,11 @@
-from cmath import pi
-from email.mime import audio
-from genericpath import exists
 import os
-from random import sample
+import re
 import sys
-import shutil
 import pickle
 import librosa
+from tqdm import tqdm
 import soundfile as sf
 from pathlib import Path
-from tqdm import tqdm
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -21,6 +17,8 @@ TRANSFORMED_AUDIO_DIR=Path(sys.argv[2].split('=')[-1])
 TEXT_DIR = TRANSFORMED_AUDIO_DIR.joinpath("txt")
 AUDIO_DIR = TRANSFORMED_AUDIO_DIR.joinpath("wav")
 
+chars_to_ignore_regex   = '[\,\?\.\!\;\:\"\'\(\)\{\}\“\‘\”\…]'  # remove special character tokens
+
 def process_audio(src_audio_path, des_audio_path):
     samplerate = 16000
     signal, sr = librosa.load(src_audio_path)
@@ -28,6 +26,8 @@ def process_audio(src_audio_path, des_audio_path):
     sf.write(des_audio_path.resolve(), resample_signal, samplerate=samplerate)
 
 def process_text(sentence, des_text_path):
+    sentence = re.sub(chars_to_ignore_regex, '', sentence).lower().strip()
+    sentence = re.sub(' +', ' ', sentence)
     with open(des_text_path.resolve(), 'w') as fout:
         fout.write(sentence)
 
@@ -48,16 +48,9 @@ if __name__ == "__main__":
         audios_path = list(AUDIOS_DIR.glob("*/*.wav"))
         for audio_path in tqdm(audios_path, total=len(audios_path), desc="Processing approved audios"):
             user = audio_path.parent.name
-            user_audio_dir = AUDIO_DIR.joinpath(user)
-            user_text_dir = TEXT_DIR.joinpath(user)
             
-            if not user_audio_dir.exists():
-                user_audio_dir.mkdir(parents=True, exist_ok=True)
-            if not user_text_dir.exists():
-                user_text_dir.mkdir(parents=True, exist_ok=True)
-            
-            user_audio_path = user_audio_dir.joinpath(audio_path.name)
-            user_text_path = user_text_dir.joinpath(audio_path.name.replace(".wav", ".txt"))
+            user_audio_path = AUDIO_DIR.joinpath(f"{user}_{audio_path.name}")
+            user_text_path = TEXT_DIR.joinpath(f"{user}_{audio_path.name.replace('.wav', '.txt')}")
             
             if user == "GUEST_USER":
                 sentence_id = audio_path.name.split("_")[0]

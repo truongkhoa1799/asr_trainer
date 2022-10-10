@@ -54,3 +54,7 @@ nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/__pycache__/__init__
 nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/__pycache__/gpu_rnnt_kernel.cpython-38.pyc
 nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/__pycache__/gpu_rnnt.cpython-38.pyc
 nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/__pycache__/reduce.cpython-38.pyc
+
+
+conformer_asr/pipeline_fectch_approved_audios/data
+conformer_asr/pipeline_fectch_approved_audios/utils
