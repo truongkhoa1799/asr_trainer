@@ -119,7 +119,7 @@ training:
 
   vocab_size: 512
   tokenizer:
-    tokenizer_dir: "/home/khoatlv/ASR_Nemo/tokenizers/tokenizers_1664456940"
+    tokenizer_dir: "/home/khoatlv/ASR_Nemo/tokenizers"
     type: spe
     type_cfg: bpe
     tokenizer_conformer: "tokenizer_${training.tokenizer.type}_${training.tokenizer.type_cfg}_v${training.vocab_size}"

@@ -120,11 +120,15 @@ def create_manifest(config):
     for dataset in datasets:
         if not config["use_datasets"][f"use_{dataset}"]: 
             continue
-        LOGGER.log_info(f"\tCreate manifest for {dataset} dataset")
+        LOGGER.log_info(f"\t{dataset.upper()}:")
         if dataset == "common_voice":
             train_manifest_path = prepare_data['common_voice']['train_manifest']
             dev_manifest_path = prepare_data['common_voice']['dev_manifest']
             test_manifest_path = prepare_data['common_voice']['test_manifest']
+            
+            num_training_data = os.popen(f"wc -l {train_manifest_path}").read().strip()
+            num_dev_data = os.popen(f"wc -l {dev_manifest_path}").read().strip()
+            num_testing_data = os.popen(f"wc -l {test_manifest_path}").read().strip()
             
             if not os.path.exists(train_manifest_path) \
                 or not os.path.exists(dev_manifest_path) \
@@ -135,12 +139,16 @@ def create_manifest(config):
             train_script += f"{train_manifest_path} {dev_manifest_path} "
             test_script += f"{test_manifest_path} "
             
-            LOGGER.log_info(f"\t\t{train_manifest_path}")
-            LOGGER.log_info(f"\t\t{dev_manifest_path}")
-            LOGGER.log_info(f"\t\t{test_manifest_path}")
+            LOGGER.log_info(f"\t\tTrain:\t{num_training_data}")
+            LOGGER.log_info(f"\t\tDev:\t{num_dev_data}")
+            LOGGER.log_info(f"\t\tTest:\t{num_testing_data}")
+            print()
         else:
             train_manifest_path = prepare_data[dataset].train_manifest
             test_manifest_path = prepare_data[dataset].test_manifest
+            
+            num_training_data = os.popen(f"wc -l {train_manifest_path}").read().strip()
+            num_testing_data = os.popen(f"wc -l {test_manifest_path}").read().strip()
             
             if not os.path.exists(train_manifest_path) \
                 or not os.path.exists(test_manifest_path):
@@ -150,8 +158,9 @@ def create_manifest(config):
             train_script += f"{train_manifest_path} "
             test_script += f"{test_manifest_path} "
             
-            LOGGER.log_info(f"\t\t{train_manifest_path}")
-            LOGGER.log_info(f"\t\t{test_manifest_path}")
+            LOGGER.log_info(f"\t\tTrain:\t{num_training_data}")
+            LOGGER.log_info(f"\t\tTest:\t{num_testing_data}")
+            print()
         
     if os.path.exists(config.manifest.train_manifest): os.remove(config.manifest.train_manifest)
     if os.path.exists(config.manifest.test_manifest): os.remove(config.manifest.test_manifest)
@@ -195,5 +204,5 @@ def create_manifest(config):
 if __name__ == "__main__":
     create_manifest(config)
     train_data_processed, test_data_processed = preprocessing_data(config)
-    extract_character_set(config, train_data_processed, test_data_processed)
+    # extract_character_set(config, train_data_processed, test_data_processed)
     # remove_invalid_file()
