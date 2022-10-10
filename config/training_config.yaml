@@ -42,7 +42,7 @@ prepare_data:
     train_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_train_manifest.json"
     test_manifest: "/home/khoatlv/data/vlsp2021/manifests/vlsp2021_test_manifest.json"
 
-  viettel:
+  viettel_data_collected:
     manifest: "/home/khoatlv/data/data_collected/viettel/manifests/manifests.json"
     test_manifest: "/home/khoatlv/data/data_collected/viettel/manifests/viettel_test_manifests.json"
     train_manifest: "/home/khoatlv/data/data_collected/viettel/manifests/viettel_train_manifests.json"
@@ -52,12 +52,12 @@ prepare_data:
     test_manifest: "/home/khoatlv/data/data_collected/viettel/assistant/manifests/viettel_assistant_test_manifests.json"
     train_manifest: "/home/khoatlv/data/data_collected/viettel/assistant/manifests/viettel_assistant_train_manifests.json"
   
-  zalo:
+  zalo_data_collected:
     manifest: "/home/khoatlv/data/data_collected/Zalo/manifests/manifests.json"
     test_manifest: "/home/khoatlv/data/data_collected/Zalo/manifests/zalo_test_manifests.json"
     train_manifest: "/home/khoatlv/data/data_collected/Zalo/manifests/zalo_train_manifests.json"
   
-  fpt:
+  fpt_data_collected:
     manifest: "/home/khoatlv/data/data_collected/FPT/manifests/manifests.json"
     test_manifest: "/home/khoatlv/data/data_collected/FPT/manifests/fpt_test_manifests.json"
     train_manifest: "/home/khoatlv/data/data_collected/FPT/manifests/fpt_train_manifests.json"
@@ -89,10 +89,10 @@ training:
     use_infore_415h: False
 
     # Data collected
-    use_viettel: True
+    use_viettel_data_collected: True
     use_viettel_assistant: True
-    use_fpt: True
-    use_zalo: True
+    use_fpt_data_collected: True
+    use_zalo_data_collected: True
   
   vocabs: [
     'b', 'c', 'd', 'đ', 'g', 'h', 'k', 'l', 'm', 'n', 'p', 'q', 'r', 's', 't', 'v', 'x',
@@ -120,15 +120,16 @@ training:
   vocab_size: 512
   tokenizer:
     tokenizer_dir: "/home/khoatlv/ASR_Nemo/tokenizers"
+    training_tokenizer_dir: "/home/khoatlv/ASR_Nemo/tokenizers/tokenizer_spe_bpe_v512_2022-10-10"
     type: spe
     type_cfg: bpe
     tokenizer_conformer: "tokenizer_${training.tokenizer.type}_${training.tokenizer.type_cfg}_v${training.vocab_size}"
   
   model:
     config: "/home/khoatlv/ASR_Nemo/config/conformer_small_ctc_bpe.yaml"
-    finetuned_model: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_small_epoch=98.nemo"
-    # finetuned_model: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_epoch_200_v2.nemo"
-    freeze_encoder: False
+    # finetuned_model: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_small_epoch=98.nemo"
+    finetuned_model: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_tokenizer_512_epoch_200.nemo"
+    freeze_encoder: True
     device: 'cuda'
 
     use_pretrained: False

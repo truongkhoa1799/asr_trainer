@@ -161,13 +161,13 @@ def create_manifest(config):
             LOGGER.log_info(f"\t\tTrain:\t{num_training_data}")
             LOGGER.log_info(f"\t\tTest:\t{num_testing_data}")
             print()
-        
+
     if os.path.exists(config.manifest.train_manifest): os.remove(config.manifest.train_manifest)
     if os.path.exists(config.manifest.test_manifest): os.remove(config.manifest.test_manifest)
-    
+
     train_script += f"> {config.manifest.train_manifest}"
     test_script += f"> {config.manifest.test_manifest}"
-    
+
     os.system(train_script)
     os.system(test_script)
 
@@ -198,8 +198,12 @@ def create_manifest(config):
 #         if os.path.exists(path): 
 #             # os.remove(path)
 #             count_has+=1
-    
+
 #     print(count_has)
+
+'''
+python3 conformer_asr/data/prepare_manifest_dataset.py
+'''
 
 if __name__ == "__main__":
     create_manifest(config)
