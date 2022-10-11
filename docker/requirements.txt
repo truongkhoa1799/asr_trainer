@@ -21,4 +21,8 @@ jiwer==2.3.0
 huggingface-hub==0.8.1
 pytorch-lightning==1.6.5
 openpyxl==3.0.10
+
+multiprocess==0.70.13
+vietnam-number==1.0.3
+pydub==0.25.1
 # onnxruntime --no-dependencies

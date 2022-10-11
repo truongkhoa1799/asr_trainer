@@ -6,8 +6,11 @@ from tqdm import tqdm
 from pathlib import Path
 from functools import partial
 from multiprocess.pool import Pool
+from conformer_asr.utils import Logger
 
-from smart_speaker_common.utils.reg_utils import extract_str, replace_str, RegType, chars_to_ignore_regex_begin, chars_to_ignore_regex_end, extract_str
+from conformer_asr.reg_utils import extract_str, replace_str, RegType, chars_to_ignore_regex_begin, chars_to_ignore_regex_end, extract_str
+
+LOGGER = Logger(name="CLEANNG_DIGIT_FPT_DATASET")
 
 PROCESSED_DATA_DIR = Path(sys.argv[1].split('=')[-1])
 text_path = PROCESSED_DATA_DIR.joinpath("noised", "number_text.txt")
@@ -71,45 +74,49 @@ def normalize_text(item):
     return 0, item['audio_name'], data, item['duration']
 
 if __name__ == '__main__':
-    ''' Proccess transcriptAll file'''
-    clean_texts = []
-    digit_texts = []
-    def iterator_data(transcript_path):
-        with open(transcript_path, 'r') as fin:
-            for transcript in fin:
-                transcript_splitted = transcript.split('|')
-                audio_name = transcript_splitted[0]
-                text = transcript_splitted[1]
-                duration = round(float(transcript_splitted[2].split('-')[-1]), 2)
-                text = text.strip().lower()
+    try:
+        ''' Proccess transcriptAll file'''
+        clean_texts = []
+        digit_texts = []
+        def iterator_data(transcript_path):
+            with open(transcript_path, 'r') as fin:
+                for transcript in fin:
+                    transcript_splitted = transcript.split('|')
+                    audio_name = transcript_splitted[0]
+                    text = transcript_splitted[1]
+                    duration = round(float(transcript_splitted[2].split('-')[-1]), 2)
+                    text = text.strip().lower()
+                    
+                    yield {
+                        "audio_name": audio_name,
+                        "text": text,
+                        "duration": duration,
+                    }
+                    
                 
-                yield {
-                    "audio_name": audio_name,
-                    "text": text,
-                    "duration": duration,
-                }
-                
-               
-    iterator = iterator_data(transcript_path=text_path)
-    partial_func = partial(normalize_text)
-    
-    p = Pool(8)
-    process_item_map = p.imap_unordered(
-        partial_func,
-        tqdm(iterator, desc="Process items FPT")
-    )
-    
-    for code, audio_name, text, duration in process_item_map:
-        item = "|".join([audio_name, text, str(duration)])
+        iterator = iterator_data(transcript_path=text_path)
+        partial_func = partial(normalize_text)
         
-        if code == 0:
-            clean_texts.append(item)
-        elif code == 1:
-            digit_texts.append(item)
+        p = Pool(8)
+        process_item_map = p.imap_unordered(
+            partial_func,
+            tqdm(iterator, desc="Process items FPT")
+        )
+        
+        for code, audio_name, text, duration in process_item_map:
+            item = "|".join([audio_name, text, str(duration)])
             
-    print(f"Number of clean audio: {len(clean_texts)}")
-    print(f"Number of audio has digit: {len(digit_texts)}")
-    
-    for data, file_path in zip((clean_texts, digit_texts), (removed_number_text_path, remained_number_text_path)):
-        with open(file_path, 'w') as fout:
-            fout.write("\n".join(data) + "\n")
+            if code == 0:
+                clean_texts.append(item)
+            elif code == 1:
+                digit_texts.append(item)
+                
+        LOGGER.log_info(f"Number of clean audio: {len(clean_texts)}")
+        LOGGER.log_info(f"Number of audio has digit: {len(digit_texts)}")
+        
+        for data, file_path in zip((clean_texts, digit_texts), (removed_number_text_path, remained_number_text_path)):
+            with open(file_path, 'w') as fout:
+                fout.write("\n".join(data) + "\n")
+    except Exception as e:
+        print(e)
+        exit(-1)

@@ -202,7 +202,7 @@ def create_manifest(config):
 #     print(count_has)
 
 '''
-python3 conformer_asr/data/prepare_manifest_dataset.py
+python3 conformer_asr/data_processing/prepare_manifest_dataset.py | tee -a /home/khoatlv/ASR_Nemo/log/data_processing/prepare_manifest_dataset.txt
 '''
 
 if __name__ == "__main__":

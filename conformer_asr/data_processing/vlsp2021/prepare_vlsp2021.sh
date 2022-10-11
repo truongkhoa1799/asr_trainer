@@ -1,6 +1,6 @@
 SOURCE_DIR="/home/khoatlv/ASR_Nemo"
 
-LOG_NAME=$(echo $0 | cut -d'/' -f3 | cut -d'.' -f1)
+LOG_NAME=$(echo $0 | cut -d'/' -f4 | cut -d'.' -f1)
 LOG=$SOURCE_DIR/log/data_processing/"$LOG_NAME.txt"
 if [ -e $LOG ];
 then
@@ -42,7 +42,7 @@ info "3. Create final training and testing manifest by remove all data with WER 
 echo ""
 
 info "----------- Create original training and testing manifest -----------"
-python3 conformer_asr/data_processing/create_manifest_vlsp2021.py \
+python3 conformer_asr/data_processing/vlsp2021/create_manifest_vlsp2021.py \
     --dataset=$TRAINING_SET \
     --data_directory=$TRAINING_DATA_DIRECTORY \
     --original_manifest=$ORIGINAL_TRAIN_MANIFEST_PATH \
@@ -54,7 +54,7 @@ then
 fi
 info ""
 
-python3 conformer_asr/data_processing/create_manifest_vlsp2021.py \
+python3 conformer_asr/data_processing/vlsp2021/create_manifest_vlsp2021.py \
     --dataset=$TESTING_SET \
     --data_directory=$TESTING_DATA_DIRECTORY \
     --original_manifest=$ORIGINAL_TEST_MANIFEST_PATH \

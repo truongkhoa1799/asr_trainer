@@ -1,6 +1,6 @@
 SOURCE_DIR="/home/khoatlv/ASR_Nemo"
 
-LOG_NAME=$(echo $0 | cut -d'/' -f3 | cut -d'.' -f1)
+LOG_NAME=$(echo $0 | cut -d'/' -f4 | cut -d'.' -f1)
 LOG=$SOURCE_DIR/log/data_processing/"$LOG_NAME.txt"
 if [ -e $LOG ];
 then
@@ -32,7 +32,7 @@ info "-------------------------------------------------------------------"
 echo ""
 
 info "----------- Create original training and testing manifest -----------"
-python3 conformer_asr/data_processing/create_manifest_vivos.py \
+python3 conformer_asr/data_processing/vivos/create_manifest_vivos.py \
     --dataset=$TRAINING_SET \
     --data_directory=$TRAINING_DATA_DIRECTORY \
     --manifest=$TRAINING_MANIFEST_PATH \
@@ -44,7 +44,7 @@ then
 fi
 info ""
 
-python3 conformer_asr/data_processing/create_manifest_vivos.py \
+python3 conformer_asr/data_processing/vivos/create_manifest_vivos.py \
     --dataset=$TESTING_SET \
     --data_directory=$TESTING_DATA_DIRECTORY \
     --manifest=$TESTING_MANIFEST_PATH \

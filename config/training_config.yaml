@@ -71,6 +71,10 @@ prepare_data:
     train_manifest: "/home/khoatlv/data/vivos/manifests/vivos_train_manifest.json"
     test_manifest: "/home/khoatlv/data/vivos/manifests/vivos_test_manifest.json"
 
+  fpt:
+    train_manifest: "/home/khoatlv/data/FPT/manifests/fpt_train_manifest.json"
+    test_manifest: "/home/khoatlv/data/FPT/manifests/fpt_test_manifest.json"
+
 training:
   manifest:
     train_manifest: "/home/khoatlv/manifests/train_manifest.json"
@@ -81,6 +85,7 @@ training:
   
   use_datasets:
     use_vivos: True
+    use_fpt: True # 19937 data with 23.0 hours
     use_common_voice: True
     use_vlsp2020_set1: True  # 100.000 files
     use_vlsp2020_set2: True   # 43.000 files

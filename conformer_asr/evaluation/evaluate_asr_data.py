@@ -40,6 +40,7 @@ class EvaluationConfig(TypedDict):
     original_manifest_path: str
     log_dir: str
     dataset_name: str
+    device: str
 
 class CleanConfig(TypedDict):
     manifest_path: str
@@ -132,7 +133,7 @@ def evaluate_data(config):
     for data in tqdm(manifest_data, total=len(manifest_data), desc=f"Evaluating {dataset_name}"):
         try:
             signal, _ = librosa.load(data["audio_filepath"], sr=16000)
-            transcribed_text = transcribe_ASR(signal)
+            transcribed_text = transcribe_ASR(signal, device=config['device'])
             ground_truth_text = data["text"]
             wer_score = wer([transcribed_text], [ground_truth_text])
             
@@ -145,6 +146,7 @@ def evaluate_data(config):
             log_data.append(evaluation_log)
             
         except Exception as e:
+            print(e)
             error_files.append(data["audio_filepath"])
         
         counts += 1
@@ -313,7 +315,8 @@ if __name__ == "__main__":
         evaluation_dataset_config = EvaluationConfig(
             original_manifest_path = args.original_manifest_path,
             dataset_name = args.dataset_name,
-            log_dir = args.log_dir
+            log_dir = args.log_dir,
+            device = args.device
         )   
         LOGGER.log_info("Inititalize Wav2Vec2 Model...")
         processor = Wav2Vec2Processor.from_pretrained(evaluation_config.model.wav2vec2_processor_path)
