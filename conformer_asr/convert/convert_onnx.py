@@ -14,8 +14,8 @@ from conformer_asr.utils import config, Logger, Config
 
 '''
 python3 /home/khoatlv/ASR_Nemo/conformer_asr/convert/convert_onnx.py \
-    --nemo_model_path="/home/khoatlv/ASR_Nemo/experiments/old_checkpoint/2022-10-08_tokenizer_512/Conformer_small_Model_Language_vi--val_wer=0.0879-epoch=161-last.nemo" \
-    --onnx_model_path="/home/khoatlv/ASR_Nemo/experiments/old_checkpoint/2022-10-08_tokenizer_512/Conformer_small_Model_Language_vi--val_wer=0.0879-epoch=161-last.onnx" \
+    --nemo_model_path="/home/khoatlv/ASR_Nemo/models/conformer/Conformer_tokenizer_512_epoch_200.nemo" \
+    --onnx_model_path="/home/khoatlv/ASR_Nemo/models/conformer/Conformer_tokenizer_512_epoch_200.onnx" \
     --device='cpu'
 '''
 

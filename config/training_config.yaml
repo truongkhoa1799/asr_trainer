@@ -125,10 +125,13 @@ training:
   vocab_size: 512
   tokenizer:
     tokenizer_dir: "/home/khoatlv/ASR_Nemo/tokenizers"
-    training_tokenizer_dir: "/home/khoatlv/ASR_Nemo/tokenizers/tokenizer_spe_bpe_v512_2022-10-10"
     type: spe
     type_cfg: bpe
-    tokenizer_conformer: "tokenizer_${training.tokenizer.type}_${training.tokenizer.type_cfg}_v${training.vocab_size}"
+    spe_max_sentencepiece_length: 4
+    tokenizer_conformer: "tokenizer_${training.tokenizer.type}_${training.tokenizer.type_cfg}_v${training.vocab_size}_max_${training.tokenizer.spe_max_sentencepiece_length}"
+
+    # Update this directory before training
+    training_tokenizer_dir: "/home/khoatlv/ASR_Nemo/tokenizers/tokenizer_spe_bpe_v512_max_4_2022-10-13"
   
   model:
     config: "/home/khoatlv/ASR_Nemo/config/conformer_small_ctc_bpe.yaml"
@@ -159,6 +162,7 @@ lm:
     collected_data_dir: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/collected_data"
     collected_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/collected_data.txt"
     
+    use_assistant_data: True
     assistant_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/assistant_data.txt"
     manifest_data: "/home/khoatlv/ASR_Nemo/n_gram_lm/data/manifest_data.txt"
 
@@ -175,9 +179,9 @@ lm:
     model_name: "conformer-small"
     kenml_model_file: "${lm.model.n_gram_model}/${lm.model.ngram_length}-gram_${lm.model.model_name}_lm.bin"
 
-    ngram_length: 4
+    ngram_length: 3
     # asr_path: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_small_Model_Language_vi_epoch=250.nemo"
-    asr_path: "/home/khoatlv/ASR_Nemo/experiments/old_checkpoint/2022-10-08_tokenizer_512/Conformer_small_Model_Language_vi--val_wer=0.0862-epoch=164-v1.nemo"
+    asr_path: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_tokenizer_512_epoch_200.nemo"
   
 collect_viettel_data:
   assistant:

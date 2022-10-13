@@ -36,7 +36,7 @@ model:
     manifest_filepath: ???
     sample_rate: ${model.sample_rate}
     max_duration: 16.7 # it is set for LibriSpeech, you may need to update it for your dataset
-    min_duration: 0.0
+    min_duration: 0.1
     # tarred datasets
     is_tarred: false
     tarred_audio_filepaths: null
@@ -101,9 +101,9 @@ model:
   spec_augment:
     _target_: nemo.collections.asr.modules.SpectrogramAugmentation
     freq_masks: 2 # set to zero to disable it
+    freq_width: 20
     # you may use lower time_masks for smaller models to have a faster convergence
     time_masks: 2 # to zero to disable it
-    freq_width: 27
     time_width: 0.05
 
   encoder:
@@ -149,6 +149,7 @@ model:
     name: novograd
     # lr: 0.025 ## From pretrained
     lr: 0.01 ## From checkpoint 98 epoch
+    # lr: 0.025 ## Finetune with new vocabulary
 
     # optimizer arguments
     betas: [0.8, 0.25]
@@ -159,14 +160,16 @@ model:
       name: CosineAnnealing
       warmup_steps: null
       # number of epochs when multiply with epoch 
-      # warmup_ratio: 0.1 ## From pretrained
-      warmup_ratio: 0.02 ## From checkpoint 98 epoch
+      warmup_ratio: 0.1 ## From pretrained
+      # warmup_ratio: 0.05 ## From checkpoint 98 epoch
+      # warmup_ratio: 0.10 ## Finetune with new vocabulary
       min_lr: 1e-9
       last_epoch: -1
 
 trainer:
   devices: 1 # number of gpus
-  max_epochs: 200
+  # max_epochs: 50
+  max_epochs: 10 ## Finetune with new vocabulary
   max_steps: -1 # computed at runtime if not set
   num_nodes: 1
   accelerator: gpu
@@ -178,8 +181,8 @@ trainer:
   val_check_interval: 0.25 # Set to 0.25 to check 4 times per epoch, or an int for number of iterations
   check_val_every_n_epoch: 1
   precision: 16
-  # amp_backend: apex
-  # amp_level: 'O1'
+  amp_backend: apex
+  amp_level: 'O1'
   sync_batchnorm: false
   benchmark: false
 

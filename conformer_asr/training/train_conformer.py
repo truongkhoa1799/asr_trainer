@@ -11,6 +11,10 @@ from conformer_asr.utils import config, Logger, Config
 
 WANDB_LOGGER = True
 
+'''
+python3 conformer_asr/training/train_conformer.py
+'''
+
 # -------------------------------- FUNCTIONS --------------------------------
 def enable_bn_se(m):
     if type(m) == nn.BatchNorm1d:
@@ -39,11 +43,11 @@ if __name__ == "__main__":
         os.system(f"wandb login {training_config.wandb.key}")
     
     # CONFIG TOKENIZER
-    tokenizer_dir = training_config.tokenizer.tokenizer_dir
+    training_tokenizer_dir = training_config.tokenizer.training_tokenizer_dir
     tokenizer_type = training_config.tokenizer.type
     tokenizer_type_cfg = training_config.tokenizer.type_cfg
     vocab_size = config.get_config(["training", "vocab_size"])
-    tokenizer_conformer_dir = os.path.join(tokenizer_dir, f"tokenizer_{tokenizer_type}_{tokenizer_type_cfg}_v{vocab_size}")
+    tokenizer_conformer_dir = os.path.join(training_tokenizer_dir, training_config.tokenizer.tokenizer_conformer)
     
     logging.info(f"\tUse Tokenizer Type {tokenizer_type}")
     logging.info(f"\tUse Tokenizer Type Config {tokenizer_type_cfg}")

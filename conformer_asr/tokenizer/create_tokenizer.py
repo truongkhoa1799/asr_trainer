@@ -20,6 +20,7 @@ if __name__ == "__main__":
     vocab_size = config.vocab_size
     tokenizer_type = config.tokenizer.type  # can be wpe or spe
     tokenizer_type_cfg = config.tokenizer.type_cfg        # ["bpe", "unigram"]
+    spe_max_sentencepiece_length = config.tokenizer.spe_max_sentencepiece_length    # -1 for un limied
     
     cleaned_train_manifest = config.manifest.train_manifest_cleaned
     cleaned_test_manifest = config.manifest.test_manifest_cleaned
@@ -27,17 +28,19 @@ if __name__ == "__main__":
     num_train_data = os.popen(f"wc -l {cleaned_train_manifest}").read().strip()
     num_test_data = os.popen(f"wc -l {cleaned_test_manifest}").read().strip()
     
-    LOGGER.log_info(f"Training data\t\t: {num_train_data}")
-    LOGGER.log_info(f"Testing data\t\t: {num_test_data}")
-    LOGGER.log_info(f"Tokenizer type\t\t: {tokenizer_type}")
-    LOGGER.log_info(f"Tokenizer type config\t: {tokenizer_type_cfg}")
-    LOGGER.log_info(f"Tokenizer directory\t: {tokenizer_conformer_dir}")
+    LOGGER.log_info(f"Training data\t\t\t: {num_train_data}")
+    LOGGER.log_info(f"Testing data\t\t\t: {num_test_data}")
+    LOGGER.log_info(f"Tokenizer type\t\t\t: {tokenizer_type}")
+    LOGGER.log_info(f"Tokenizer type config\t\t: {tokenizer_type_cfg}")
+    LOGGER.log_info(f"Tokenizer directory\t\t: {tokenizer_conformer_dir}")
+    LOGGER.log_info(f"Max sentencepiece length\t: {spe_max_sentencepiece_length}")
     
     python_script = f"python3 conformer_asr/tokenizer/process_asr_text_tokenizer.py \
         --manifest={cleaned_train_manifest} \
         --data_root={tokenizer_conformer_dir} \
         --tokenizer={tokenizer_type} \
         --spe_type={tokenizer_type_cfg} \
+        --spe_max_sentencepiece_length={spe_max_sentencepiece_length} \
         --spe_character_coverage=1.0 \
         --no_lower_case \
         --log \
