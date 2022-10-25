@@ -136,8 +136,8 @@ training:
   model:
     config: "/home/khoatlv/ASR_Nemo/config/conformer_small_ctc_bpe.yaml"
     # finetuned_model: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_small_epoch=98.nemo"
-    finetuned_model: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_tokenizer_512_epoch_200.nemo"
-    freeze_encoder: True
+    finetuned_model: "/home/khoatlv/ASR_Nemo/models/conformer/Conformer_tokenizer_512_epoch_200_v2.nemo"
+    freeze_encoder: False
     device: 'cuda'
 
     use_pretrained: False

@@ -148,7 +148,7 @@ model:
   optim:
     name: novograd
     # lr: 0.025 ## From pretrained
-    lr: 0.01 ## From checkpoint 98 epoch
+    lr: 0.001 ## From checkpoint 98 epoch
     # lr: 0.025 ## Finetune with new vocabulary
 
     # optimizer arguments
@@ -160,16 +160,16 @@ model:
       name: CosineAnnealing
       warmup_steps: null
       # number of epochs when multiply with epoch 
-      warmup_ratio: 0.1 ## From pretrained
-      # warmup_ratio: 0.05 ## From checkpoint 98 epoch
+      # warmup_ratio: 0.1 ## From pretrained
+      warmup_ratio: 0.04 ## From checkpoint 98 epoch
       # warmup_ratio: 0.10 ## Finetune with new vocabulary
       min_lr: 1e-9
       last_epoch: -1
 
 trainer:
   devices: 1 # number of gpus
-  # max_epochs: 50
-  max_epochs: 10 ## Finetune with new vocabulary
+  max_epochs: 150
+  # max_epochs: 10 ## Finetune with new vocabulary
   max_steps: -1 # computed at runtime if not set
   num_nodes: 1
   accelerator: gpu
